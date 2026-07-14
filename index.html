@@ -143,7 +143,7 @@
 
 <div id="storageNotice" style="max-width:1050px;margin:10px auto 0;padding:0 14px;">
   <div style="background:#fff8dc;border:1px solid #d7b45a;border-radius:12px;padding:10px 12px;font-size:.88rem;">
-    <strong>Current version:</strong> installs on phones and works offline. Entries are saved on this device until the shared club database is connected.
+    <strong>Database:</strong> <span id="storageStatus">Connecting to the shared club database…</span>
   </div>
 </div>
 
@@ -318,8 +318,12 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const KEY = "boldDragoonCCDataV4";
+const KEY = "boldDragoonCCDataV5";
+let supabaseClient = null;
+let sharedDatabaseConnected = false;
+let applyingRemoteUpdate = false;
 const demoData = {
   fixtures: [
     {id: crypto.randomUUID(), team:"1st XI", opponent:"Bowden CC, Leics - 1st XI", date:"2026-07-18T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Three", notes:"Confirmed on official Play-Cricket team page"},
@@ -372,7 +376,69 @@ function load(){
   const saved = localStorage.getItem(KEY);
   return saved ? JSON.parse(saved) : structuredClone(demoData);
 }
-function save(){ localStorage.setItem(KEY, JSON.stringify(data)); renderAll(); }
+
+function setStorageStatus(message, ok=false){
+  const el=document.getElementById("storageStatus");
+  if(!el) return;
+  el.textContent=message;
+  el.style.color=ok ? "#1f6a3b" : "#745d00";
+}
+
+async function save(){
+  localStorage.setItem(KEY, JSON.stringify(data));
+  renderAll();
+  if(!supabaseClient || !sharedDatabaseConnected || applyingRemoteUpdate) return;
+  const {error}=await supabaseClient.from("club_state").upsert({
+    id:"main",
+    data,
+    updated_at:new Date().toISOString()
+  });
+  if(error){
+    console.error(error);
+    setStorageStatus("Could not save to the shared database. Changes are saved on this device.");
+  } else {
+    setStorageStatus("Connected — club information is shared across devices.", true);
+  }
+}
+
+async function connectSharedDatabase(){
+  try{
+    const response=await fetch("/.netlify/functions/supabase-config", {cache:"no-store"});
+    if(!response.ok) throw new Error("Configuration could not be loaded");
+    const config=await response.json();
+    if(!config.url || !config.key) throw new Error("Supabase environment variables are missing");
+
+    supabaseClient=window.supabase.createClient(config.url, config.key);
+    const {data:row,error}=await supabaseClient.from("club_state").select("data").eq("id","main").maybeSingle();
+    if(error) throw error;
+
+    if(row && row.data){
+      data=row.data;
+      localStorage.setItem(KEY, JSON.stringify(data));
+      renderAll();
+    } else {
+      const {error:seedError}=await supabaseClient.from("club_state").insert({id:"main",data});
+      if(seedError) throw seedError;
+    }
+
+    sharedDatabaseConnected=true;
+    setStorageStatus("Connected — club information is shared across devices.", true);
+
+    supabaseClient.channel("club-state-live")
+      .on("postgres_changes", {event:"UPDATE",schema:"public",table:"club_state",filter:"id=eq.main"}, payload=>{
+        if(!payload.new?.data) return;
+        applyingRemoteUpdate=true;
+        data=payload.new.data;
+        localStorage.setItem(KEY, JSON.stringify(data));
+        renderAll();
+        applyingRemoteUpdate=false;
+      })
+      .subscribe();
+  }catch(error){
+    console.error(error);
+    setStorageStatus("Not connected. Complete the Supabase table setup; changes remain saved on this device.");
+  }
+}
 function fmtDate(value, timeTbc=false){
   if(!value) return "Date not set";
   const d = new Date(value);
@@ -474,7 +540,7 @@ function saveTeamSelection(){
     captain:document.querySelector('input[name="captain"]:checked')?.value||"",
     keeper:document.querySelector('input[name="keeper"]:checked')?.value||""
   };
-  save(); alert("Team selection saved on this device.");
+  save(); alert(sharedDatabaseConnected ? "Team selection saved for the club." : "Team selection saved on this device.");
 }
 function renderClub(){
   document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
@@ -514,9 +580,10 @@ function removeFixture(id){if(confirm("Delete this fixture?")){data.fixtures=dat
 function removeTraining(id){if(confirm("Delete this session?")){data.training=data.training.filter(x=>x.id!==id);save()}}
 function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
 function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
-function resetDemo(){if(confirm("Reset everything to the original demo data?")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
+function resetDemo(){if(confirm("Reset everything to the original demo data? This will update the shared club database.")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
 function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub()}
 renderAll();
+connectSharedDatabase();
 </script>
 
 <script>

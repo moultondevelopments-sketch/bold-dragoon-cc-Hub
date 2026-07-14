@@ -2,14 +2,15 @@
 
 Installable club hub for Bold Dragoon Cricket Club.
 
-## Current features
-- Club fixtures
-- Player availability
-- Team selection
-- Training sessions
-- Club announcements
-- Installable on iPhone and Android
-- Offline loading
+## Shared database setup
+1. In Supabase open **SQL Editor**.
+2. Open `SUPABASE_SETUP.sql`, copy all of it, paste it into a new query and press **Run**.
+3. In Netlify keep these environment variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. Deploy this folder/ZIP to Netlify.
 
-## Important
-This release stores changes on each device. Shared club-wide data will be added in the next database stage.
+The app will then load and save one shared club record in the Supabase `club_state` table.
+
+## Security note
+This first shared version allows anyone with the app link to edit club data. Add user login and role-based access before using it for sensitive player or junior information.
