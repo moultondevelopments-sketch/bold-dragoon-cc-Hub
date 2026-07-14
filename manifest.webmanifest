@@ -1,0 +1,22 @@
+{
+  "name": "Bold Dragoon Cricket Club Hub",
+  "short_name": "Bold Dragoon CC",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f2e8",
+  "theme_color": "#183b2b",
+  "description": "Fixtures, availability, team selection, training and club notices for Bold Dragoon Cricket Club.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

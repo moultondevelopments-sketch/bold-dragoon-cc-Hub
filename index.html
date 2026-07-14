@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#183b2b" />
+  <title>Bold Dragoon CC Hub</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Bold Dragoon CC">
+  <style>
+    :root{
+      --green:#183b2b;
+      --green2:#245b42;
+      --cream:#f5f2e8;
+      --gold:#d7b45a;
+      --white:#ffffff;
+      --ink:#172019;
+      --muted:#69756d;
+      --danger:#b83a3a;
+      --shadow:0 8px 24px rgba(0,0,0,.10);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--cream);
+      color:var(--ink);
+    }
+    header{
+      background:linear-gradient(135deg,var(--green),var(--green2));
+      color:white;
+      padding:22px 18px 18px;
+      position:sticky;
+      top:0;
+      z-index:10;
+      box-shadow:0 4px 18px rgba(0,0,0,.16);
+    }
+    .header-inner{max-width:1050px;margin:auto;display:flex;align-items:center;gap:14px}
+    .crest{
+      width:58px;height:58px;border-radius:50%;display:block;object-fit:cover;
+      background:white;border:3px solid rgba(255,255,255,.9);
+    }
+    h1{font-size:1.3rem;margin:0}
+    .subtitle{opacity:.82;font-size:.9rem;margin-top:2px}
+    main{max-width:1050px;margin:auto;padding:18px 14px 90px}
+    .hero{
+      background:white;border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:18px;margin-bottom:16px;border-left:6px solid var(--gold);
+    }
+    .hero h2{margin:0 0 6px;font-size:1.25rem}
+    .hero p{margin:0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .card{
+      background:white;border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .card h3{margin:0 0 12px;font-size:1.05rem}
+    .full{grid-column:1/-1}
+    .stat-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .pill{
+      padding:7px 10px;border-radius:999px;background:#edf3ef;
+      font-size:.85rem;
+    }
+    .pill.good{background:#e3f3e8;color:#1f6a3b}
+    .pill.bad{background:#f8e4e4;color:#8b2525}
+    .pill.wait{background:#f7efcf;color:#745d00}
+    button,.btn{
+      border:0;border-radius:12px;padding:10px 14px;font-weight:700;
+      cursor:pointer;background:var(--green);color:white;
+    }
+    button.secondary{background:#e8eee9;color:var(--green)}
+    button.gold{background:var(--gold);color:var(--green)}
+    button.danger{background:var(--danger)}
+    .button-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    a.btn{text-decoration:none;display:inline-block}
+    a.btn.secondary{background:#e8eee9;color:var(--green)}
+    .list{display:grid;gap:10px}
+    .item{
+      border:1px solid #e4e7e4;border-radius:14px;padding:12px;background:#fff;
+    }
+    .item strong{display:block}
+    .item small{color:var(--muted)}
+    .item .meta{margin-top:6px;color:var(--muted);font-size:.9rem}
+    nav{
+      position:fixed;left:0;right:0;bottom:0;background:white;
+      border-top:1px solid #dfe4df;display:grid;grid-template-columns:repeat(5,1fr);
+      z-index:20;
+    }
+    nav button{
+      background:white;color:var(--muted);border-radius:0;padding:10px 4px 8px;
+      font-size:.72rem;font-weight:700;
+    }
+    nav button span{display:block;font-size:1.25rem;margin-bottom:2px}
+    nav button.active{color:var(--green);background:#eef4f0}
+    .screen{display:none}
+    .screen.active{display:block}
+    label{font-size:.85rem;font-weight:700;display:block;margin:10px 0 5px}
+    input,select,textarea{
+      width:100%;padding:11px;border-radius:10px;border:1px solid #cfd6d0;
+      font:inherit;background:white;
+    }
+    textarea{min-height:88px;resize:vertical}
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;
+      align-items:center;justify-content:center;padding:16px;z-index:100;
+    }
+    .modal.open{display:flex}
+    .modal-box{
+      background:white;border-radius:18px;padding:18px;max-width:520px;width:100%;
+      max-height:90vh;overflow:auto;
+    }
+    .modal-head{display:flex;justify-content:space-between;align-items:center}
+    .modal-head h3{margin:0}
+    .close{background:#edf0ed;color:#222;padding:8px 10px}
+    .empty{color:var(--muted);font-style:italic}
+    .team-row{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .drag-note{font-size:.85rem;color:var(--muted)}
+    .badge{font-size:.75rem;padding:4px 7px;border-radius:8px;background:#edf3ef}
+    @media(max-width:720px){
+      .grid{grid-template-columns:1fr}
+      .full{grid-column:auto}
+      h1{font-size:1.12rem}
+      .crest{width:48px;height:48px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <img class="crest" src="bold-dragoon-logo.png" alt="Bold Dragoon CC badge">
+    <div>
+      <h1>Bold Dragoon Cricket Club</h1>
+      <div class="subtitle">Club Hub — installable club version</div>
+    </div>
+  </div>
+</header>
+
+<div id="storageNotice" style="max-width:1050px;margin:10px auto 0;padding:0 14px;">
+  <div style="background:#fff8dc;border:1px solid #d7b45a;border-radius:12px;padding:10px 12px;font-size:.88rem;">
+    <strong>Current version:</strong> installs on phones and works offline. Entries are saved on this device until the shared club database is connected.
+  </div>
+</div>
+
+<main>
+  <section id="home" class="screen active">
+    <div class="hero">
+      <h2 id="welcome">Welcome to Bold Dragoon CC</h2>
+      <p>Fixtures, availability, teams, training and club notices in one place.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>Next Match</h3>
+        <div id="nextMatch"></div>
+      </div>
+      <div class="card">
+        <h3>Next Training</h3>
+        <div id="nextTraining"></div>
+      </div>
+      <div class="card full">
+        <h3>Latest Announcement</h3>
+        <div id="latestAnnouncement"></div>
+      </div>
+      <div class="card full">
+        <h3>Quick Actions</h3>
+        <div class="button-row">
+          <button onclick="openModal('fixtureModal')">+ Add fixture</button>
+          <button onclick="openModal('trainingModal')">+ Add training</button>
+          <button onclick="openModal('announcementModal')">+ Send notice</button>
+          <button class="gold" onclick="showScreen('team')">Select team</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fixtures" class="screen">
+    <div class="card">
+      <div class="team-row">
+        <h3>Fixtures</h3>
+        <button onclick="openModal('fixtureModal')">+ Add</button>
+      </div>
+      <div id="fixtureList" class="list"></div>
+    </div>
+  </section>
+
+  <section id="availability" class="screen">
+    <div class="card">
+      <h3>Player Availability</h3>
+      <label for="availabilityFixture">Choose fixture</label>
+      <select id="availabilityFixture" onchange="renderAvailability()"></select>
+      <div id="availabilityList" class="list" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <section id="team" class="screen">
+    <div class="card">
+      <h3>Team Selection</h3>
+      <label for="teamFixture">Choose fixture</label>
+      <select id="teamFixture" onchange="renderTeamSelection()"></select>
+      <p class="drag-note">Select up to 11 players, then set captain, wicketkeeper and batting order.</p>
+      <div id="teamSelectionList" class="list"></div>
+      <div class="button-row">
+        <button onclick="saveTeamSelection()">Save selection</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="club" class="screen">
+    <div class="grid">
+      <div class="card full">
+        <h3>About Bold Dragoon CC</h3>
+        <p>Bold Dragoon CC is a friendly, sociable and inclusive Northampton cricket club with senior, social and junior cricket.</p>
+        <div class="list">
+          <div class="item">
+            <strong>Home Ground</strong>
+            <div class="meta">Opposite Northampton Old Scouts RFC, Rushmere Road, Northampton, Northamptonshire, NN1 5RY</div>
+            <div class="meta">Clubhouse: 01604 784020 · Ground: 01604 633639</div>
+          </div>
+          <div class="item">
+            <strong>Public club contact</strong>
+            <div class="meta">Secretary: Dean Collins · bdcc1987@hotmail.com</div>
+          </div>
+          <div class="item">
+            <strong>Club teams</strong>
+            <div class="meta">1st XI · 2nd XI · 3rd XI · Midweek XI · Under 11 · Girls Under 11 · Under 12 · Under 13 · All Stars · Dynamos</div>
+          </div>
+          <div class="item">
+            <strong>Useful links</strong>
+            <div class="button-row">
+              <a class="btn" href="https://bolddragoon.play-cricket.com/" target="_blank" rel="noopener">Play-Cricket</a>
+              <a class="btn secondary" href="https://www.facebook.com/bolddragooncricket/" target="_blank" rel="noopener">Facebook</a>
+              <a class="btn secondary" href="https://www.instagram.com/bolddragooncricket/" target="_blank" rel="noopener">Instagram</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="team-row">
+          <h3>Training</h3>
+          <button onclick="openModal('trainingModal')">+ Add</button>
+        </div>
+        <div id="trainingList" class="list"></div>
+      </div>
+      <div class="card">
+        <div class="team-row">
+          <h3>Announcements</h3>
+          <button onclick="openModal('announcementModal')">+ Add</button>
+        </div>
+        <div id="announcementList" class="list"></div>
+      </div>
+      <div class="card full">
+        <h3>Players</h3>
+        <div id="playerList" class="list"></div>
+        <div class="button-row">
+          <button onclick="openModal('playerModal')">+ Add player</button>
+          <button class="danger" onclick="resetDemo()">Reset demo data</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button class="active" data-screen="home" onclick="showScreen('home',this)"><span>🏠</span>Home</button>
+  <button data-screen="fixtures" onclick="showScreen('fixtures',this)"><span>📅</span>Fixtures</button>
+  <button data-screen="availability" onclick="showScreen('availability',this)"><span>✅</span>Availability</button>
+  <button data-screen="team" onclick="showScreen('team',this)"><span>🏏</span>Team</button>
+  <button data-screen="club" onclick="showScreen('club',this)"><span>📣</span>Club</button>
+</nav>
+
+<div id="fixtureModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add Fixture</h3><button class="close" onclick="closeModal('fixtureModal')">✕</button></div>
+    <label>Team</label><select id="fTeam"><option>1st XI</option><option>2nd XI</option><option>3rd XI</option><option>Midweek XI</option><option>Under 11</option><option>Girls Under 11</option><option>Under 12</option><option>Under 13</option><option>All Stars</option><option>Dynamos</option></select>
+    <label>Opponent</label><input id="fOpponent">
+    <label>Date and time</label><input id="fDate" type="datetime-local">
+    <label>Home or away</label><select id="fVenue"><option>Home</option><option>Away</option></select>
+    <label>Ground / address</label><input id="fGround">
+    <label>Competition</label><input id="fCompetition" value="League">
+    <label>Notes</label><textarea id="fNotes"></textarea>
+    <div class="button-row"><button onclick="addFixture()">Save fixture</button></div>
+  </div>
+</div>
+
+<div id="trainingModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add Training</h3><button class="close" onclick="closeModal('trainingModal')">✕</button></div>
+    <label>Team / group</label><input id="tTeam" value="Junior training">
+    <label>Date and time</label><input id="tDate" type="datetime-local">
+    <label>Location</label><input id="tLocation" value="Bold Dragoon CC">
+    <label>Session plan</label><textarea id="tPlan" placeholder="Warm-up, fielding, nets, game scenario"></textarea>
+    <div class="button-row"><button onclick="addTraining()">Save training</button></div>
+  </div>
+</div>
+
+<div id="announcementModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add Announcement</h3><button class="close" onclick="closeModal('announcementModal')">✕</button></div>
+    <label>Title</label><input id="aTitle">
+    <label>Message</label><textarea id="aMessage"></textarea>
+    <div class="button-row"><button onclick="addAnnouncement()">Publish notice</button></div>
+  </div>
+</div>
+
+<div id="playerModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add Player</h3><button class="close" onclick="closeModal('playerModal')">✕</button></div>
+    <label>Player name</label><input id="pName">
+    <label>Team</label><select id="pTeam"><option>1st XI</option><option>2nd XI</option><option>3rd XI</option><option>Midweek XI</option><option>Under 11</option><option>Girls Under 11</option><option>Under 12</option><option>Under 13</option><option>All Stars</option><option>Dynamos</option></select>
+    <label>Parent/contact name</label><input id="pContact">
+    <label>Phone or email</label><input id="pDetails">
+    <div class="button-row"><button onclick="addPlayer()">Save player</button></div>
+  </div>
+</div>
+
+<script>
+const KEY = "boldDragoonCCDataV4";
+const demoData = {
+  fixtures: [
+    {id: crypto.randomUUID(), team:"1st XI", opponent:"Bowden CC, Leics - 1st XI", date:"2026-07-18T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Three", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Mears Ashby CC - 2nd XI", date:"2026-07-18T12:00", venue:"Away", ground:"Mears Ashby Playing Field", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"1st XI", opponent:"Oundle Town CC - Saturday 2nd XI", date:"2026-07-25T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Three", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Dunchurch & Bilton CC - 1st XI", date:"2026-07-25T12:00", venue:"Away", ground:"Dunchurch Sportsfield", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Sharnbrook & Bromham CC - 2nd XI", date:"2026-08-01T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"1st XI", opponent:"Great Houghton CC - 1st XI", date:"2026-08-08T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Three", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Horton House CC - 3rd XI", date:"2026-08-08T12:00", venue:"Away", ground:"Bozeat Playing Fields", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Under 11", opponent:"Old Northamptonians CC - Under 11", date:"2026-07-19T10:00", venue:"Away", ground:"Old Northamptonians Sports Ground", competition:"U11 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Under 11", opponent:"Barby CC, Northants - Under 11", date:"2026-07-26T10:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"U11 Summer League - North", notes:"Home fixture shown on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Under 11", opponent:"Brixworth CC - Under 11", date:"2026-08-02T10:00", venue:"Away", ground:"Dallas Burston Grounds", competition:"U11 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Under 11", opponent:"Overstone Park CC - Under 11", date:"2026-08-09T10:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"U11 Summer League - North", notes:"Home fixture shown on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Under 13", opponent:"Old Northamptonians CC - Under 13", date:"2026-07-27T18:00", venue:"Away", ground:"Old Northamptonians Sports Ground", competition:"U13 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Under 13", opponent:"Barby CC, Northants - Under 13", date:"2026-08-03T18:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"U13 Summer League - North", notes:"Home fixture shown on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Under 13", opponent:"Brixworth CC - Under 13", date:"2026-08-10T18:00", venue:"Away", ground:"Dallas Burston Grounds", competition:"U13 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Barby CC, Northants - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Brixworth CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Earls Barton CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Northampton Saints CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Old Northamptonians CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Rushden and Higham Town CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Finedon Dolben CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Barby CC, Northants - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Brixworth CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Earls Barton CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Northampton Saints CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Old Northamptonians CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Rushden and Higham Town CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Finedon Dolben CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Barby CC, Northants - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Brixworth CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Earls Barton CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Northampton Saints CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Old Northamptonians CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Rushden and Higham Town CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
+    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Finedon Dolben CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true}
+  ],
+  training: [],
+  announcements: [
+    {id: crypto.randomUUID(), title:"Official fixtures imported", message:"Fixtures shown here were checked against Bold Dragoon CC's official Play-Cricket team pages on 14 July 2026. Festival start times remain TBC where Play-Cricket did not publish a time.", date:new Date().toISOString()}
+  ],
+  players: [],
+  availability:{},
+  selections:{}
+};
+let data = load();
+
+function load(){
+  const saved = localStorage.getItem(KEY);
+  return saved ? JSON.parse(saved) : structuredClone(demoData);
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(data)); renderAll(); }
+function fmtDate(value, timeTbc=false){
+  if(!value) return "Date not set";
+  const d = new Date(value);
+  if(timeTbc){
+    return d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}) + " · Time TBC";
+  }
+  return d.toLocaleString("en-GB",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+}
+function showScreen(id,btn){
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+  const target = btn || document.querySelector(`nav button[data-screen="${id}"]`);
+  if(target) target.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function openModal(id){document.getElementById(id).classList.add("open")}
+function closeModal(id){document.getElementById(id).classList.remove("open")}
+function futureSorted(arr){return [...arr].sort((a,b)=>new Date(a.date)-new Date(b.date))}
+function nextFuture(arr){
+  const now = new Date();
+  return futureSorted(arr).find(x=>new Date(x.date)>=now) || futureSorted(arr)[0];
+}
+function fixtureCard(f){
+  const av = data.availability[f.id] || {};
+  const counts = Object.values(av).reduce((a,v)=>(a[v]=(a[v]||0)+1,a),{});
+  return `<div class="item">
+    <strong>${f.team} v ${f.opponent}</strong>
+    <small>${fmtDate(f.date, f.timeTbc)} · ${f.venue}</small>
+    <div class="meta">${f.ground || ""}${f.competition ? " · "+f.competition : ""}</div>
+    ${f.notes ? `<div class="meta">${f.notes}</div>`:""}
+    <div class="stat-row">
+      <span class="pill good">${counts.Available||0} available</span>
+      <span class="pill bad">${counts.Unavailable||0} unavailable</span>
+      <span class="pill wait">${counts.Maybe||0} maybe</span>
+    </div>
+    <div class="button-row">
+      <button class="secondary" onclick="removeFixture('${f.id}')">Delete</button>
+    </div>
+  </div>`;
+}
+function renderHome(){
+  const f=nextFuture(data.fixtures);
+  document.getElementById("nextMatch").innerHTML=f?fixtureCard(f):'<p class="empty">No fixtures added.</p>';
+  const t=nextFuture(data.training);
+  document.getElementById("nextTraining").innerHTML=t?
+    `<strong>${t.team}</strong><div class="meta">${fmtDate(t.date)}</div><div class="meta">${t.location}</div><div class="meta">${t.plan||""}</div>`:
+    '<p class="empty">No training added.</p>';
+  const a=[...data.announcements].sort((x,y)=>new Date(y.date)-new Date(x.date))[0];
+  document.getElementById("latestAnnouncement").innerHTML=a?
+    `<strong>${a.title}</strong><div class="meta">${a.message}</div>`:
+    '<p class="empty">No announcements.</p>';
+}
+function renderFixtures(){
+  document.getElementById("fixtureList").innerHTML = futureSorted(data.fixtures).map(fixtureCard).join("") || '<p class="empty">No fixtures added.</p>';
+  const opts = data.fixtures.map(f=>`<option value="${f.id}">${f.team} v ${f.opponent} — ${fmtDate(f.date, f.timeTbc)}</option>`).join("");
+  const a=document.getElementById("availabilityFixture"), t=document.getElementById("teamFixture");
+  const oldA=a.value, oldT=t.value;
+  a.innerHTML=opts;t.innerHTML=opts;
+  if([...a.options].some(o=>o.value===oldA)) a.value=oldA;
+  if([...t.options].some(o=>o.value===oldT)) t.value=oldT;
+}
+function renderAvailability(){
+  const fixtureId=document.getElementById("availabilityFixture").value;
+  const av=data.availability[fixtureId]||{};
+  document.getElementById("availabilityList").innerHTML=data.players.map(p=>`
+    <div class="item">
+      <strong>${p.name}</strong><small>${p.team}</small>
+      <div class="button-row">
+        ${["Available","Unavailable","Maybe"].map(s=>`<button class="${av[p.id]===s?"gold":"secondary"}" onclick="setAvailability('${fixtureId}','${p.id}','${s}')">${s}</button>`).join("")}
+      </div>
+    </div>`).join("") || '<p class="empty">No players added.</p>';
+}
+function setAvailability(fid,pid,status){
+  data.availability[fid]=data.availability[fid]||{};
+  data.availability[fid][pid]=status; save();
+}
+function renderTeamSelection(){
+  const fixtureId=document.getElementById("teamFixture").value;
+  const sel=data.selections[fixtureId]||{players:[],captain:"",keeper:""};
+  document.getElementById("teamSelectionList").innerHTML=data.players.map((p,i)=>`
+    <div class="item">
+      <div class="team-row">
+        <div><strong>${p.name}</strong><small>${p.team}</small></div>
+        <input style="width:auto" type="checkbox" class="pick" value="${p.id}" ${sel.players.includes(p.id)?"checked":""}>
+      </div>
+      <div class="button-row">
+        <label style="margin:0"><input style="width:auto" type="radio" name="captain" value="${p.id}" ${sel.captain===p.id?"checked":""}> Captain</label>
+        <label style="margin:0"><input style="width:auto" type="radio" name="keeper" value="${p.id}" ${sel.keeper===p.id?"checked":""}> Wicketkeeper</label>
+      </div>
+    </div>`).join("");
+}
+function saveTeamSelection(){
+  const fid=document.getElementById("teamFixture").value;
+  const players=[...document.querySelectorAll(".pick:checked")].map(x=>x.value);
+  if(players.length>11){alert("Please select no more than 11 players.");return}
+  data.selections[fid]={
+    players,
+    captain:document.querySelector('input[name="captain"]:checked')?.value||"",
+    keeper:document.querySelector('input[name="keeper"]:checked')?.value||""
+  };
+  save(); alert("Team selection saved on this device.");
+}
+function renderClub(){
+  document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
+    <div class="item"><strong>${t.team}</strong><small>${fmtDate(t.date)}</small>
+    <div class="meta">${t.location}</div><div class="meta">${t.plan||""}</div>
+    <div class="button-row"><button class="secondary" onclick="removeTraining('${t.id}')">Delete</button></div></div>`).join("") || '<p class="empty">No training sessions.</p>';
+  document.getElementById("announcementList").innerHTML=[...data.announcements].sort((a,b)=>new Date(b.date)-new Date(a.date)).map(a=>`
+    <div class="item"><strong>${a.title}</strong><small>${new Date(a.date).toLocaleDateString("en-GB")}</small>
+    <div class="meta">${a.message}</div>
+    <div class="button-row"><button class="secondary" onclick="removeAnnouncement('${a.id}')">Delete</button></div></div>`).join("") || '<p class="empty">No announcements.</p>';
+  document.getElementById("playerList").innerHTML=data.players.map(p=>`
+    <div class="item"><strong>${p.name}</strong><small>${p.team}</small><div class="meta">${p.contact||""} ${p.details||""}</div>
+    <div class="button-row"><button class="secondary" onclick="removePlayer('${p.id}')">Delete</button></div></div>`).join("") || '<p class="empty">No players.</p>';
+}
+function addFixture(){
+  const opp=document.getElementById("fOpponent").value.trim(), date=document.getElementById("fDate").value;
+  if(!opp||!date){alert("Please add an opponent and date.");return}
+  data.fixtures.push({id:crypto.randomUUID(),team:fTeam.value,opponent:opp,date,venue:fVenue.value,ground:fGround.value,competition:fCompetition.value,notes:fNotes.value});
+  closeModal("fixtureModal"); save();
+}
+function addTraining(){
+  if(!tDate.value){alert("Please choose a date.");return}
+  data.training.push({id:crypto.randomUUID(),team:tTeam.value,date:tDate.value,location:tLocation.value,plan:tPlan.value});
+  closeModal("trainingModal"); save();
+}
+function addAnnouncement(){
+  if(!aTitle.value.trim()||!aMessage.value.trim()){alert("Please add a title and message.");return}
+  data.announcements.push({id:crypto.randomUUID(),title:aTitle.value,message:aMessage.value,date:new Date().toISOString()});
+  closeModal("announcementModal"); save();
+}
+function addPlayer(){
+  if(!pName.value.trim()){alert("Please add a player name.");return}
+  data.players.push({id:crypto.randomUUID(),name:pName.value,team:pTeam.value,contact:pContact.value,details:pDetails.value});
+  closeModal("playerModal"); save();
+}
+function removeFixture(id){if(confirm("Delete this fixture?")){data.fixtures=data.fixtures.filter(x=>x.id!==id);save()}}
+function removeTraining(id){if(confirm("Delete this session?")){data.training=data.training.filter(x=>x.id!==id);save()}}
+function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
+function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
+function resetDemo(){if(confirm("Reset everything to the original demo data?")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
+function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub()}
+renderAll();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+  });
+}
+</script>
+
+</body>
+</html>
