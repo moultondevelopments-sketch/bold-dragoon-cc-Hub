@@ -1,0 +1,4 @@
+This is the final clean deployment package.
+After deployment, test:
+/.netlify/functions/supabase-config
+Expected result: JSON containing url and key.
