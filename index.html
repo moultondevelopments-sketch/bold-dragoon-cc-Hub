@@ -552,6 +552,17 @@
       .bottom-nav button{min-width:0!important}
     }
 
+
+    .system-alert{
+      display:none;margin:10px 0;padding:11px 13px;border-radius:13px;
+      background:#fdeaea;border:1px solid #e2abab;color:#862d2d;font-size:.8rem
+    }
+    .system-alert.show{display:block}
+    .weather-refresh{
+      margin-top:8px!important;padding:7px 11px!important;border-radius:10px!important;
+      font-size:.75rem!important
+    }
+
 </style>
 </head>
 <body>
@@ -599,7 +610,7 @@
       <span id="profileButtonText">Set up profile</span>
     </button>
   </div>
-</header>
+</header><div class="app-shell"><div id="systemAlert" class="system-alert"></div></div>
 
 <div id="accountMenu" class="account-menu">
   <strong id="accountName">Member</strong>
@@ -886,7 +897,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 10.3 · Polished Navigation & Weather</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 11.0 · Stable App</div>
 
 
   <section id="operations" class="screen">
@@ -1159,7 +1170,7 @@
 <div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const KEY = "boldDragoonCCDataV10_2";
+const KEY = "boldDragoonCCDataV11";
 const PROFILE_KEY = "boldDragoonCCCurrentPlayer";
 let currentPlayerId = localStorage.getItem(PROFILE_KEY) || "";
 let supabaseClient = null;
@@ -1228,7 +1239,7 @@ function setStorageStatus(message, ok=false){
 
 async function save(){
   localStorage.setItem(KEY, JSON.stringify(data));
-  renderAll();
+  renderAllSafe();
   if(!supabaseClient || !sharedDatabaseConnected || applyingRemoteUpdate) return;
   const {error}=await supabaseClient.from("club_state").upsert({
     id:"main",
@@ -1261,7 +1272,7 @@ async function connectSharedDatabase(){
       const originalVersion=row.data.dataVersion||0;
       data=migrateClubData(row.data);
       localStorage.setItem(KEY, JSON.stringify(data));
-      renderAll();
+      renderAllSafe();
       if(originalVersion<DATA_VERSION){
         const {error:migrationError}=await supabaseClient.from("club_state").upsert({
           id:"main",data,updated_at:new Date().toISOString()
@@ -1283,7 +1294,7 @@ async function connectSharedDatabase(){
         applyingRemoteUpdate=true;
         data=migrateClubData(payload.new.data);
         localStorage.setItem(KEY, JSON.stringify(data));
-        renderAll();
+        renderAllSafe();
         applyingRemoteUpdate=false;
       })
       .subscribe();
@@ -1496,7 +1507,7 @@ async function syncPlayCricket(){
       if(old) Object.assign(old,f); else data.fixtures.push(f);
     });
     data.playCricket={lastSync:new Date().toISOString(),siteIdConfigured:true};
-    await save();renderAll();
+    await save();renderAllSafe();
     playCricketStatus.textContent=`Last synced ${new Date().toLocaleString("en-GB")} · ${imported.length} fixtures received.`;
     toast("Play-Cricket fixtures synced");
   }catch(err){
@@ -1686,7 +1697,7 @@ function continueAsGuest(){
   currentSecureProfile=null;
   authScreen.classList.remove("show");
   toggleAccountMenu(false);
-  renderAll();
+  renderAllSafe();
   toast("Read-only mode");
 }
 
@@ -1716,7 +1727,8 @@ async function initSecureAccount(){
     supabaseClient.auth.onAuthStateChange(async(_event,newSession)=>{await handleAuthSession(newSession)});
   }catch(err){
     console.warn("Secure account setup:",err);
-    authScreen.classList.add("show");
+    console.warn("Secure sign-in is not configured yet.");
+    authScreen.classList.remove("show");
     showAuthMessage("Secure sign-in is not configured yet. Run SUPABASE_SECURE_AUTH.sql and confirm Supabase Auth is enabled.","error");
   }
 }
@@ -1731,7 +1743,7 @@ async function handleAuthSession(session){
   authScreen.classList.remove("show");
   await ensureSecureProfile();
   renderSecureAccount();
-  renderAll();
+  renderAllSafe();
 }
 
 async function ensureSecureProfile(){
@@ -1874,24 +1886,35 @@ async function fetchWeatherDirectly(){
 }
 
 async function loadLiveWeather(){
-  liveWeatherContent.innerHTML='<div class="weather-main-icon">⛅</div><div><strong>Loading live weather…</strong><div class="meta">Bold Dragoon CC, Rushmere Road</div></div>';
+  const target=document.getElementById("liveWeatherContent");
+  const alertTarget=document.getElementById("weatherAlert");
+  if(!target)return;
+
+  target.innerHTML='<div class="weather-main-icon">⛅</div><div><strong>Loading live weather…</strong><div class="meta">Bold Dragoon CC, Rushmere Road</div></div>';
+
+  const timeout=(ms)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error("Weather request timed out")),ms));
+
   try{
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),6000);
     let payload;
     try{
-      const response=await fetch("/.netlify/functions/ground-weather",{cache:"no-store",signal:controller.signal});
-      clearTimeout(timer);
+      const response=await Promise.race([
+        fetch("/.netlify/functions/ground-weather?build=11",{cache:"no-store"}),
+        timeout(7000)
+      ]);
       payload=await response.json();
       if(!response.ok)throw new Error(payload.error||"Weather function unavailable");
-    }catch(functionError){
-      clearTimeout(timer);
-      payload=await fetchWeatherDirectly();
+    }catch(serverError){
+      payload=await Promise.race([fetchWeatherDirectly(),timeout(9000)]);
     }
+
     liveWeather=payload;
     renderLiveWeather();
-  }catch(err){
-    liveWeatherContent.innerHTML=`<div class="weather-main-icon">⚠️</div><div><strong>Weather unavailable</strong><div class="meta">${escapeMessage(err.message)}</div><button class="secondary" style="margin-top:8px" onclick="loadLiveWeather()">Try again</button></div>`;
+  }catch(error){
+    target.innerHTML=`<div class="weather-main-icon">⚠️</div>
+      <div><strong>Weather unavailable</strong>
+      <div class="meta">${escapeMessage(error.message||"Unable to load the forecast")}</div>
+      <button class="secondary weather-refresh" onclick="loadLiveWeather()">Try again</button></div>`;
+    if(alertTarget)alertTarget.innerHTML="";
   }
 }
 
@@ -2205,12 +2228,68 @@ function removeTraining(id){if(confirm("Delete this session?")){data.training=da
 function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
 function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
 function resetDemo(){if(confirm("Reset everything to the original demo data? This will update the shared club database.")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
-function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMessages();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();renderPremiumHome();renderAppExperience();updatePlayCricketStatus();updateProfileUI()}
-document.getElementById("calendarFrom").value=new Date().toISOString().slice(0,10);
-renderAll();
-connectSharedDatabase();
-initSecureAccount();
-loadLiveWeather();
+
+function reportAppError(area,error){
+  console.error(`[${area}]`,error);
+  if(window.systemAlert){
+    systemAlert.textContent=`A part of the app could not load (${area}). Other sections remain available.`;
+    systemAlert.classList.add("show");
+  }
+}
+
+function safeRun(name,fn){
+  try{fn()}catch(error){reportAppError(name,error)}
+}
+
+function renderAllSafe(){
+  [
+    ["home",()=>renderHome()],
+    ["fixtures",()=>renderFixtures()],
+    ["availability",()=>renderAvailability()],
+    ["team selection",()=>renderTeamSelection()],
+    ["club",()=>renderClub()],
+    ["members",()=>renderWholeClub()],
+    ["teams",()=>renderTeams()],
+    ["news",()=>renderNews()],
+    ["messages",()=>renderMessages()],
+    ["more",()=>renderMore()],
+    ["operations",()=>renderOperations()],
+    ["today",()=>renderTodayGround()],
+    ["calendar",()=>renderGroundCalendar()],
+    ["dashboard",()=>renderDashboardMetrics()],
+    ["premium home",()=>renderPremiumHome()],
+    ["app experience",()=>renderAppExperience()],
+    ["Play-Cricket status",()=>updatePlayCricketStatus()],
+    ["profile",()=>updateProfileUI()]
+  ].forEach(([name,fn])=>safeRun(name,fn));
+}
+
+function startIndependentServices(){
+  // Each service starts separately, even if another renderer fails.
+  Promise.resolve().then(()=>connectSharedDatabase()).catch(e=>reportAppError("database",e));
+  Promise.resolve().then(()=>initSecureAccount()).catch(e=>reportAppError("account",e));
+  Promise.resolve().then(()=>loadLiveWeather()).catch(e=>reportAppError("weather",e));
+}
+
+function renderAllLegacy(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMessages();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();renderPremiumHome();renderAppExperience();updatePlayCricketStatus();updateProfileUI()}
+function bootBoldDragoonApp(){
+  try{
+    const calendarInput=document.getElementById("calendarFrom");
+    if(calendarInput) calendarInput.value=new Date().toISOString().slice(0,10);
+    renderAllSafe();
+    startIndependentServices();
+  }catch(error){
+    reportAppError("startup",error);
+    // Weather still gets a final independent attempt.
+    setTimeout(()=>loadLiveWeather().catch(e=>reportAppError("weather",e)),200);
+  }
+}
+
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",bootBoldDragoonApp,{once:true});
+}else{
+  bootBoldDragoonApp();
+}
 </script>
 
 <script>

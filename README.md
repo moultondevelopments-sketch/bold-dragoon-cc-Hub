@@ -1,16 +1,19 @@
-# Bold Dragoon CC Hub — Version 10.3
+# Bold Dragoon CC Hub — Version 11.0 Stable App
 
-Verified fixes:
-- Replaced the legacy seven-button menu with a professional five-tab navigation
-- Correct iPhone safe-area spacing and unclipped labels
-- Live weather now falls back directly to Open-Meteo if the Netlify function fails
-- Weather includes a retry button rather than loading forever
-- Database connection now changes to Local mode if Supabase is not ready
-- Old fixtures are also removed from real-time Supabase updates
-- Service-worker cache bumped
+This release changes the app startup architecture.
+
+Fixed:
+- One broken page can no longer stop every other page or service
+- Navigation, database, authentication and weather start independently
+- Weather has Netlify and direct Open-Meteo fallbacks
+- Weather timeout and Try Again control
+- Visible system warning when a particular section fails
+- Read-only use remains available before secure account setup
+- Network-first loading for the main app and Netlify functions
+- New service-worker and local-storage versions
 
 Automated checks passed:
 - JavaScript syntax
-- All button handlers
+- Every clickable handler
 - No duplicate IDs
-- Exactly five main navigation tabs
+- Required startup, navigation and weather functions
