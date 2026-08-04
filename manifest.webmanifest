@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#f4f3ec",
   "theme_color": "#123f2d",
-  "description": "Official Bold Dragoon Cricket Club app for fixtures, teams, availability, ground calendar and club operations.",
+  "description": "Official Bold Dragoon Cricket Club app.",
   "icons": [
     {
       "src": "icon-192.png",

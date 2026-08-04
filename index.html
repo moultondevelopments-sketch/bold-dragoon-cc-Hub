@@ -363,6 +363,137 @@
       .bottom-nav{bottom:8px}
     }
 
+
+    .app-shell{max-width:980px;margin:0 auto}
+    .top-status{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      margin:14px 0;padding:13px 15px;border-radius:18px;
+      background:rgba(255,255,255,.9);border:1px solid rgba(18,63,45,.08);
+      box-shadow:0 10px 26px rgba(20,58,41,.07)
+    }
+    .top-status-left{display:flex;align-items:center;gap:10px}
+    .status-dot{width:10px;height:10px;border-radius:50%;background:#d9ae3d;box-shadow:0 0 0 5px rgba(217,174,61,.14)}
+    .top-status.connected .status-dot{background:#2f8f57;box-shadow:0 0 0 5px rgba(47,143,87,.14)}
+    .profile-badge{
+      width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,#e8c35d,#c89728);
+      color:#123f2d;display:grid;place-items:center;font-weight:900;border:2px solid rgba(255,255,255,.5)
+    }
+    .welcome-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:10px}
+    .welcome-copy small{display:block;color:#d6e7dc;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+    .hero-summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .summary-chip{
+      display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:999px;
+      background:rgba(255,255,255,.10);color:#fff;font-size:.75rem;font-weight:800
+    }
+    .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+    .quick-tile{
+      border-radius:18px;padding:14px;background:#fff;border:1px solid var(--line);
+      box-shadow:0 10px 24px rgba(20,58,41,.06);text-align:left;min-height:108px
+    }
+    .quick-tile .qicon{font-size:1.45rem;display:block;margin-bottom:14px}
+    .quick-tile b{display:block}.quick-tile span{display:block;font-size:.75rem;color:var(--muted);margin-top:4px}
+    .home-section{margin-top:16px}
+    .home-section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+    .home-section-head h3{margin:0}
+    .timeline{display:grid;gap:10px}
+    .timeline-item{
+      display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;
+      padding:13px;border-radius:16px;background:#fff;border:1px solid var(--line)
+    }
+    .timeline-time{font-weight:900;color:var(--green-2)}
+    .timeline-type{font-size:.7rem;font-weight:900;border-radius:999px;padding:5px 8px;background:var(--green-3);color:var(--green)}
+    .countdown{
+      display:grid;place-items:center;min-width:74px;height:74px;border-radius:20px;
+      background:linear-gradient(135deg,#123f2d,#1f6f4b);color:#fff;text-align:center
+    }
+    .countdown strong{font-size:1.35rem;line-height:1}.countdown span{font-size:.65rem;opacity:.8;margin-top:3px}
+    .fixture-card-pro{
+      border-radius:22px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);
+      padding:16px;margin-bottom:12px;overflow:hidden;position:relative
+    }
+    .fixture-card-pro:before{
+      content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--gold)
+    }
+    .fixture-card-pro .fixture-header{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .fixture-card-pro .fixture-title{font-size:1.05rem;font-weight:900}
+    .fixture-card-pro .fixture-sub{font-size:.78rem;color:var(--muted);margin-top:3px}
+    .fixture-card-pro .fixture-body{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-top:14px}
+    .fixture-card-pro .fixture-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .fixture-card-pro .fixture-actions button{flex:1;min-width:92px;border-radius:12px}
+    .segmented{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:#edf2ee
+    }
+    .segmented button{background:transparent;color:var(--muted);border-radius:10px;padding:9px 8px}
+    .segmented button.active{background:#fff;color:var(--green);box-shadow:0 4px 12px rgba(20,58,41,.08)}
+    .team-cover{
+      min-height:150px;border-radius:20px;padding:18px;color:#fff;display:flex;align-items:flex-end;
+      background:
+        radial-gradient(circle at 80% 20%,rgba(217,174,61,.33),transparent 30%),
+        linear-gradient(135deg,#133f2e,#206d4a)
+    }
+    .team-cover h3{margin:0;font-size:1.5rem}.team-cover p{margin:4px 0 0;color:#dcebe3}
+    .team-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .team-stat{padding:10px;border-radius:14px;background:#f5f9f6;text-align:center}
+    .team-stat strong{display:block;font-size:1.25rem;color:var(--green)}
+    .skeleton{position:relative;overflow:hidden;background:#e9eeea}
+    .skeleton:after{
+      content:"";position:absolute;inset:0;transform:translateX(-100%);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent);
+      animation:shimmer 1.4s infinite
+    }
+    @keyframes shimmer{100%{transform:translateX(100%)}}
+    .toast{bottom:94px}
+    @media(max-width:760px){
+      .quick-grid{grid-template-columns:repeat(2,1fr)}
+      .timeline-item{grid-template-columns:50px 1fr}
+      .timeline-type{grid-column:2}
+      .fixture-card-pro .fixture-body{grid-template-columns:1fr}
+      .countdown{width:100%;height:58px;display:flex;gap:8px}
+    }
+
+
+    .message-layout{display:grid;grid-template-columns:260px 1fr;gap:14px}
+    .channel-list{display:grid;gap:7px}
+    .channel-button{
+      width:100%;display:grid;grid-template-columns:42px 1fr auto;gap:10px;
+      align-items:center;text-align:left;padding:10px;border-radius:14px;
+      background:#fff;color:var(--ink);border:1px solid var(--line)
+    }
+    .channel-button.active{background:var(--green);color:#fff}
+    .channel-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--green-3)}
+    .channel-button.active .channel-icon{background:rgba(255,255,255,.14)}
+    .channel-name{font-weight:900}.channel-sub{font-size:.7rem;color:var(--muted)}
+    .channel-button.active .channel-sub{color:#dce9e1}
+    .unread-badge{min-width:24px;height:24px;padding:0 7px;border-radius:999px;display:grid;place-items:center;background:var(--gold);color:#173d2d;font-size:.7rem;font-weight:900}
+    .message-panel{min-height:560px;display:flex;flex-direction:column;border-radius:20px;background:#fff;border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow)}
+    .message-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:15px;border-bottom:1px solid var(--line)}
+    .message-stream{flex:1;min-height:360px;max-height:560px;overflow:auto;padding:16px;background:linear-gradient(180deg,#f8faf8,#f3f5f2)}
+    .message-bubble{max-width:82%;margin-bottom:12px;padding:11px 13px;border-radius:16px 16px 16px 4px;background:#fff;border:1px solid #e1e6e2;box-shadow:0 6px 14px rgba(20,58,41,.05)}
+    .message-bubble.mine{margin-left:auto;background:#dff0e5;border-color:#cae3d2;border-radius:16px 16px 4px 16px}
+    .message-author{font-size:.72rem;font-weight:900;color:var(--green-2)}
+    .message-text{margin-top:4px;white-space:pre-wrap;word-break:break-word}
+    .message-time{font-size:.65rem;color:var(--muted);margin-top:5px;text-align:right}
+    .message-compose{display:grid;grid-template-columns:1fr auto;gap:9px;padding:12px;border-top:1px solid var(--line);background:#fff}
+    .message-compose textarea{min-height:48px;max-height:120px;resize:vertical;margin:0}
+    .message-compose button{align-self:end;height:48px;border-radius:14px}
+    .message-empty{text-align:center;padding:44px 18px;color:var(--muted)}
+    .announcement-banner{padding:11px 13px;border-radius:13px;background:var(--gold-soft);color:#604b0f;margin-bottom:12px}
+    .message-tools{display:flex;gap:8px;flex-wrap:wrap}
+    @media(max-width:760px){
+      .message-layout{grid-template-columns:1fr}
+      .channel-list{display:flex;overflow:auto;padding-bottom:6px}
+      .channel-button{min-width:190px}
+      .message-panel{min-height:520px}
+      .message-stream{max-height:480px}
+    }
+
+
+    .consent-warning{
+      margin:0 12px 12px;padding:11px 13px;border-radius:13px;
+      background:#fff4d8;border:1px solid #e6c96c;color:#5c4a16;font-size:.82rem
+    }
+    .read-only-compose{opacity:.58;pointer-events:none}
+
 </style>
 </head>
 <body>
@@ -392,12 +523,23 @@
   <section id="home" class="screen active">
     <div class="hero-grid">
       <div class="hero-card">
-        <div class="hero-kicker">● Official club app</div><h2 id="heroGreeting">Welcome to Bold Dragoon CC</h2>
+        <div class="welcome-row">
+      <div class="welcome-copy">
+        <div class="hero-kicker">● Official club app</div>
+        <small id="dayGreeting">Good evening</small>
+        <h2 id="heroGreeting">Welcome to Bold Dragoon CC</h2>
+      </div>
+      <div class="profile-badge" id="heroInitials">BD</div>
+    </div>
         <p>Everything happening across the club, ground and teams in one place.</p>
-        <div class="hero-actions">
+        <div class="hero-summary">
+      <span class="summary-chip" id="heroGroundChip">● Ground open</span>
+      <span class="summary-chip" id="heroNextChip">No match scheduled</span>
+    </div>
+    <div class="hero-actions">
           <button onclick="showScreen('ground')">Open calendar</button>
           <button onclick="showScreen('availability')">Set availability</button>
-          <button onclick="showScreen('teams')">View teams</button>
+          <button onclick="showScreen('teams')">View teams</button><button onclick="showScreen('messages')">Messages</button>
         </div>
       </div>
       <div class="card weather-card">
@@ -411,7 +553,14 @@
       <div class="metric"><strong id="metricMembers">0</strong><span>Club members</span></div>
       <div class="metric"><strong id="metricResponses">0</strong><span>Availability responses</span></div>
     </div>
-    <div class="hero-grid">
+    
+    <div class="quick-grid">
+      <button class="quick-tile" onclick="showScreen('availability')"><span class="qicon">✅</span><b>Availability</b><span>Respond for matches</span></button>
+      <button class="quick-tile" onclick="showScreen('ground')"><span class="qicon">📅</span><b>Calendar</b><span>See the ground diary</span></button>
+      <button class="quick-tile" onclick="showScreen('fixtures')"><span class="qicon">🏏</span><b>Matches</b><span>Fixtures and results</span></button>
+      <button class="quick-tile" onclick="showScreen('messages')"><span class="qicon">💬</span><b>Messages</b><span>Club and team chats</span></button>
+    </div>
+<div class="hero-grid">
       <div class="card glass-card">
         <div class="team-row"><div><span class="app-chip">NEXT MATCH</span><h3 style="margin-top:8px">Upcoming fixture</h3></div><button class="secondary" onclick="showScreen('fixtures')">All matches</button></div>
         <div id="premiumNextMatch"></div>
@@ -634,7 +783,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 7.0 · Premium Mobile</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 9.1 · Junior Consent Controls</div>
 
 
   <section id="operations" class="screen">
@@ -674,10 +823,38 @@
     </div>
   </section>
 
+
+  <section id="messages" class="screen">
+    <div class="section-title">
+      <div><h2>Message centre</h2><p>Club, team, junior, parent and committee conversations in one place.</p></div>
+      <button onclick="openModal('channelModal')">+ New channel</button>
+    </div>
+    <div class="message-layout">
+      <div class="card">
+        <div class="team-row"><h3>Channels</h3><span class="app-chip">Shared</span></div>
+        <div id="messageChannels" class="channel-list"></div>
+      </div>
+      <div class="message-panel">
+        <div class="message-head">
+          <div><strong id="activeChannelTitle">Whole club</strong><div id="activeChannelAudience" class="meta">All members</div></div>
+          <div class="message-tools">
+            <button class="secondary" onclick="markChannelRead()">Mark read</button>
+          </div>
+        </div>
+        <div id="messageStream" class="message-stream"></div>
+        <div id="messageConsentWarning" class="consent-warning" style="display:none"></div><div id="messageComposer" class="message-compose">
+          <textarea id="messageInput" placeholder="Write a message…" onkeydown="messageKeyDown(event)"></textarea>
+          <button onclick="sendClubMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="more" class="screen">
     <div class="section-title"><div><h2>More</h2><p>Club information, documents, contacts and administration.</p></div></div>
     <div class="more-grid">
-      <button class="more-tile" onclick="showScreen('availability')"><b>✅ Availability</b><span class="meta">Respond for matches and training</span></button>
+      <button class="more-tile" onclick="showScreen('messages')"><b>💬 Message centre</b><span class="meta">Club and team conversations</span></button>
+<button class="more-tile" onclick="showScreen('availability')"><b>✅ Availability</b><span class="meta">Respond for matches and training</span></button>
       <button class="more-tile" onclick="showScreen('news')"><b>📣 News</b><span class="meta">Club announcements and updates</span></button>
       <button class="more-tile" onclick="showScreen('operations')"><b>⚙️ Operations</b><span class="meta">Ground, rota and membership</span></button>
       <button class="more-tile" onclick="showScreen('wholeclub')"><b>👥 Members</b><span class="meta">Directory, roles and club sections</span></button>
@@ -707,6 +884,17 @@
 
 
 
+
+
+<div id="channelModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Create message channel</h3><button class="close" onclick="closeModal('channelModal')">✕</button></div>
+    <label>Channel name</label><input id="chName" placeholder="e.g. U13 Parents">
+    <label>Audience</label><select id="chAudience"><option>Whole club</option><option>Senior players</option><option>Women & Girls</option><option>Junior players</option><option>Parents / guardians</option><option>Captains and coaches</option><option>Committee only</option><option>Volunteers</option></select>
+    <label>Icon</label><select id="chIcon"><option>💬</option><option>🏏</option><option>👨‍👩‍👧</option><option>🧒</option><option>📋</option><option>🚜</option><option>🍺</option><option>📣</option></select>
+    <div class="button-row"><button onclick="createMessageChannel()">Create channel</button></div>
+  </div>
+</div>
 
 <div id="contactModal" class="modal">
   <div class="modal-box">
@@ -916,6 +1104,18 @@ const demoData = {
   ],
   members:[],
   groundStatus:"Open",
+  messageChannels:[
+    {id:"whole-club",name:"Whole club",audience:"All members",icon:"📣"},
+    {id:"senior-cricket",name:"Senior cricket",audience:"Senior players, captains and coaches",icon:"🏏"},
+    {id:"junior-cricket",name:"Junior cricket",audience:"Junior players, parents and coaches",icon:"🧒"},
+    {id:"parents",name:"Parents & guardians",audience:"Parents and guardians",icon:"👨‍👩‍👧"},
+    {id:"committee",name:"Committee",audience:"Committee members",icon:"📋"},
+    {id:"ground-team",name:"Ground team",audience:"Ground staff and volunteers",icon:"🚜"}
+  ],
+  messages:[
+    {id:crypto.randomUUID(),channelId:"whole-club",author:"Bold Dragoon CC",authorId:"club-admin",text:"Welcome to the Bold Dragoon message centre.",createdAt:new Date().toISOString(),pinned:true}
+  ],
+  messageRead:{},
   contacts:[
     {id:crypto.randomUUID(),name:"Club Secretary",role:"Secretary",email:"bolddragooncc1987@gmail.com",phone:""}
   ],
@@ -941,6 +1141,9 @@ data.clubSections=data.clubSections||[];
 data.members=data.members||[];
 data.groundStatus=data.groundStatus||"Open";
 data.news=data.news||[];
+data.messageChannels=data.messageChannels||[];
+data.messages=data.messages||[];
+data.messageRead=data.messageRead||{};
 data.contacts=data.contacts||[];
 data.documents=data.documents||[];
 data.sponsors=data.sponsors||[];
@@ -1077,6 +1280,8 @@ function renderFixtures(){
   a.innerHTML=opts;t.innerHTML=opts;
   if([...a.options].some(o=>o.value===oldA)) a.value=oldA;
   if([...t.options].some(o=>o.value===oldT)) t.value=oldT;
+
+  renderProfessionalFixtures();
 }
 function getCurrentPlayer(){return data.players.find(p=>p.id===currentPlayerId)}
 function initials(name="?"){return name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"?"}
@@ -1276,6 +1481,8 @@ function renderTeams(){
       ${fixtures.length?fixtures.map(f=>`<div class="meta">${new Date(f.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"})} · v ${f.opponent}</div>`).join(""):'<div class="meta">No linked fixtures yet</div>'}
       <div class="button-row"><button class="secondary" onclick="showScreen('fixtures')">Fixtures</button><button class="secondary" onclick="showScreen('availability')">Availability</button></div></div>`;
   }).join("");
+
+  renderProfessionalTeams();
 }
 
 function renderNews(){
@@ -1390,6 +1597,242 @@ function renderPremiumHome(){
   premiumToday.innerHTML=items.map(e=>`<div class="premium-item"><div class="premium-icon">${e.type==="Match"?"🏏":e.type==="Training"?"🎯":e.type==="Meeting"?"🗂️":"📍"}</div><div><strong>${e.title}</strong><div class="meta">${new Date(e.start).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})} · ${e.resource||"Ground"}</div></div><span class="premium-badge">${e.type}</span></div>`).join("")||'<div class="empty-state"><strong>Nothing scheduled today</strong><p>The ground diary is clear.</p></div>';
 }
 
+
+let fixtureView="upcoming";
+
+function appGreeting(){
+  const hour=new Date().getHours();
+  return hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";
+}
+
+function daysUntil(dateValue){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const target=new Date(dateValue); target.setHours(0,0,0,0);
+  return Math.ceil((target-now)/(1000*60*60*24));
+}
+
+function renderAppExperience(){
+  const profile=loadProfile();
+  dayGreeting.textContent=appGreeting();
+  heroInitials.textContent=profile?.name
+    ? profile.name.split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase()
+    : "BD";
+
+  heroGroundChip.textContent=`● Ground ${String(data.groundStatus||"Open").toLowerCase()}`;
+
+  const now=new Date();
+  const upcoming=(data.fixtures||[])
+    .filter(f=>new Date(f.date)>=now)
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  if(upcoming[0]){
+    const days=daysUntil(upcoming[0].date);
+    heroNextChip.textContent=days===0?"Match today":days===1?"Next match tomorrow":`Next match in ${days} days`;
+  }else{
+    heroNextChip.textContent="No match scheduled";
+  }
+
+  databaseStatus.classList.toggle("connected", databaseStatus.textContent.includes("Connected"));
+}
+
+function professionalFixtureCard(f){
+  const d=new Date(f.date);
+  const days=daysUntil(f.date);
+  const countdownText=days<0?"Played":days===0?"Today":days===1?"1 day":`${days} days`;
+  return `<div class="fixture-card-pro">
+    <div class="fixture-header">
+      <div>
+        <div class="fixture-title">${f.team} v ${f.opponent}</div>
+        <div class="fixture-sub">${f.competition||"Club fixture"} · ${f.venue||"Venue TBC"}</div>
+      </div>
+      <span class="app-chip">${d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</span>
+    </div>
+    <div class="fixture-body">
+      <div>
+        <div class="meta">${d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})} · ${d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div>
+        <div class="meta">${f.ground||"Ground TBC"}</div>
+      </div>
+      <div class="countdown"><strong>${countdownText}</strong><span>${days>=0?"to go":"complete"}</span></div>
+    </div>
+    <div class="fixture-actions">
+      <button onclick="showScreen('availability')">Availability</button>
+      <button class="secondary" onclick="showScreen('teams')">Team</button>
+      <button class="secondary" onclick="showScreen('ground')">Calendar</button>
+    </div>
+  </div>`;
+}
+
+function renderProfessionalFixtures(){
+  const now=new Date();
+  upcomingFixturesBtn?.classList.toggle("active",fixtureView==="upcoming");
+  allFixturesBtn?.classList.toggle("active",fixtureView==="all");
+  resultsFixturesBtn?.classList.toggle("active",fixtureView==="results");
+
+  let list=[...(data.fixtures||[])].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(fixtureView==="upcoming") list=list.filter(f=>new Date(f.date)>=now);
+  if(fixtureView==="results") list=list.filter(f=>new Date(f.date)<now).reverse();
+
+  fixturesList.innerHTML=list.map(professionalFixtureCard).join("") ||
+    '<div class="empty-state"><strong>No fixtures in this view</strong><p>They will appear here after adding or syncing fixtures.</p></div>';
+}
+
+function renderProfessionalTeams(){
+  const sections=(data.clubSections||[]);
+  const allTeams=sections.flatMap(section=>(section.teams||[]).map(name=>({name,section:section.name})));
+  teamCards.innerHTML=allTeams.map(team=>{
+    const fixtures=(data.fixtures||[]).filter(f=>String(f.team).toLowerCase().includes(team.name.toLowerCase().replace(" xi","")));
+    const upcoming=fixtures.filter(f=>new Date(f.date)>=new Date()).length;
+    const members=(data.members||[]).filter(m=>m.team===team.name).length;
+    return `<div class="team-card">
+      <div class="team-cover">
+        <div><span class="app-chip">${team.section}</span><h3>${team.name}</h3><p>Bold Dragoon Cricket Club</p></div>
+      </div>
+      <div class="team-stat-grid">
+        <div class="team-stat"><strong>${members}</strong><span>Players</span></div>
+        <div class="team-stat"><strong>${upcoming}</strong><span>Fixtures</span></div>
+        <div class="team-stat"><strong>${fixtures.length}</strong><span>Total</span></div>
+      </div>
+      <div class="button-row"><button onclick="showScreen('fixtures')">View fixtures</button><button class="secondary" onclick="showScreen('availability')">Availability</button></div>
+    </div>`;
+  }).join("");
+}
+
+
+let activeMessageChannel="whole-club";
+
+function currentMemberIdentity(){
+  const profile=loadProfile();
+  return {
+    id:profile?.id||profile?.name||"guest-device",
+    name:profile?.name||"Club member"
+  };
+}
+
+function channelUnreadCount(channelId){
+  const lastRead=data.messageRead?.[channelId]||"1970-01-01T00:00:00.000Z";
+  const identity=currentMemberIdentity();
+  return (data.messages||[]).filter(m=>m.channelId===channelId && m.authorId!==identity.id && new Date(m.createdAt)>new Date(lastRead)).length;
+}
+
+
+function juniorMessagingAllowed(channelId){
+  const profile=loadProfile()||{};
+  const memberType=profile.memberType||"Adult member";
+  const role=String(profile.role||"").toLowerCase();
+  const isPrivileged=
+    memberType==="Parent / guardian" ||
+    memberType==="Coach / captain" ||
+    memberType==="Committee" ||
+    /coach|captain|committee|admin|welfare/.test(role);
+
+  if(isPrivileged) return true;
+
+  const isJunior=memberType==="Junior member";
+  if(!isJunior) return true;
+
+  const juniorChannel=["junior-cricket","parents"].includes(channelId);
+  if(!juniorChannel) return false;
+
+  return profile.juniorMessagingConsent==="yes";
+}
+
+function applyMessagingConsentState(){
+  if(!messageComposer||!messageConsentWarning) return;
+  const allowed=juniorMessagingAllowed(activeMessageChannel);
+  messageComposer.classList.toggle("read-only-compose",!allowed);
+  messageConsentWarning.style.display=allowed?"none":"block";
+  if(!allowed){
+    const profile=loadProfile()||{};
+    messageConsentWarning.textContent=
+      (profile.memberType==="Junior member")
+      ? "Junior messaging is read-only until a parent, guardian, coach or committee administrator records consent."
+      : "You do not have permission to post in this channel.";
+  }
+}
+
+function renderMessages(){
+  const channels=data.messageChannels||[];
+  if(!channels.some(c=>c.id===activeMessageChannel)) activeMessageChannel=channels[0]?.id||"";
+  messageChannels.innerHTML=channels.map(c=>{
+    const unread=channelUnreadCount(c.id);
+    return `<button class="channel-button ${c.id===activeMessageChannel?"active":""}" onclick="openMessageChannel('${c.id}')">
+      <span class="channel-icon">${c.icon||"💬"}</span>
+      <span><span class="channel-name">${c.name}</span><span class="channel-sub">${c.audience||"Club members"}</span></span>
+      ${unread?`<span class="unread-badge">${unread}</span>`:""}
+    </button>`;
+  }).join("");
+
+  const channel=channels.find(c=>c.id===activeMessageChannel);
+  activeChannelTitle.textContent=channel?.name||"Messages";
+  activeChannelAudience.textContent=channel?.audience||"Club members";
+
+  const identity=currentMemberIdentity();
+  const messages=(data.messages||[]).filter(m=>m.channelId===activeMessageChannel).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  messageStream.innerHTML=messages.map(m=>`
+    ${m.pinned?`<div class="announcement-banner">📌 Pinned message</div>`:""}
+    <div class="message-bubble ${m.authorId===identity.id?"mine":""}">
+      <div class="message-author">${m.author}</div>
+      <div class="message-text">${escapeMessage(m.text)}</div>
+      <div class="message-time">${new Date(m.createdAt).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</div>
+    </div>`).join("")||'<div class="message-empty"><strong>No messages yet</strong><p>Start the conversation.</p></div>';
+
+  applyMessagingConsentState(); requestAnimationFrame(()=>{messageStream.scrollTop=messageStream.scrollHeight});
+}
+
+function escapeMessage(value){
+  return String(value||"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+}
+
+function openMessageChannel(id){
+  activeMessageChannel=id;
+  markChannelRead(false);
+  renderMessages();
+}
+
+function markChannelRead(showToast=true){
+  data.messageRead[activeMessageChannel]=new Date().toISOString();
+  save();
+  if(showToast) toast("Channel marked as read");
+}
+
+function sendClubMessage(){
+  if(!juniorMessagingAllowed(activeMessageChannel)){alert("Messaging is read-only until consent is granted.");return}
+  const text=messageInput.value.trim();
+  if(!text){return}
+  const identity=currentMemberIdentity();
+  data.messages.push({
+    id:crypto.randomUUID(),
+    channelId:activeMessageChannel,
+    author:identity.name,
+    authorId:identity.id,
+    text,
+    createdAt:new Date().toISOString(),
+    pinned:false
+  });
+  messageInput.value="";
+  data.messageRead[activeMessageChannel]=new Date().toISOString();
+  save();
+  toast("Message sent");
+}
+
+function messageKeyDown(event){
+  if(event.key==="Enter" && !event.shiftKey){
+    event.preventDefault();
+    sendClubMessage();
+  }
+}
+
+function createMessageChannel(){
+  const name=chName.value.trim();
+  if(!name){alert("Please add a channel name.");return}
+  const id=name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+Date.now().toString().slice(-4);
+  data.messageChannels.push({id,name,audience:chAudience.value,icon:chIcon.value});
+  activeMessageChannel=id;
+  closeModal("channelModal");
+  save();
+  toast("Channel created");
+}
+
 function renderClub(){
   document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
     <div class="item"><strong>${t.team}</strong><small>${fmtDate(t.date)}</small>
@@ -1429,7 +1872,7 @@ function removeTraining(id){if(confirm("Delete this session?")){data.training=da
 function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
 function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
 function resetDemo(){if(confirm("Reset everything to the original demo data? This will update the shared club database.")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
-function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();renderPremiumHome();updatePlayCricketStatus();updateProfileUI()}
+function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMessages();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();renderPremiumHome();renderAppExperience();updatePlayCricketStatus();updateProfileUI()}
 document.getElementById("calendarFrom").value=new Date().toISOString().slice(0,10);
 renderAll();
 connectSharedDatabase();
