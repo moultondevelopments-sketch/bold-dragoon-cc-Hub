@@ -269,6 +269,100 @@
     .paid{color:#1c6a40;font-weight:800}.due{color:#9b5f00;font-weight:800}
     .admin-only-note{font-size:.8rem;color:#6f7b72;margin-top:8px}
 
+
+    :root{
+      --green:#123f2d;
+      --green-2:#1a5a3d;
+      --green-3:#e9f2ed;
+      --gold:#d9ae3d;
+      --gold-soft:#f7edc9;
+      --ink:#132019;
+      --muted:#6d786f;
+      --surface:#ffffff;
+      --bg:#f4f3ec;
+      --line:#e1e7e2;
+      --danger:#a93434;
+      --shadow:0 14px 34px rgba(20,58,41,.10);
+    }
+    *{box-sizing:border-box}
+    body{background:linear-gradient(180deg,#f7f5ef 0%,#f2f4f1 100%);color:var(--ink)}
+    header{
+      background:linear-gradient(135deg,#123f2d 0%,#1c6344 100%);
+      box-shadow:0 10px 30px rgba(13,45,31,.18);
+      position:sticky;top:0;z-index:20
+    }
+    header .brand img{box-shadow:0 0 0 3px rgba(255,255,255,.16)}
+    header h1{letter-spacing:-.02em}
+    main{max-width:980px;margin:0 auto;padding-bottom:110px}
+    .screen{animation:screenIn .24s ease}
+    @keyframes screenIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .card,.ops-card,.team-card,.news-card,.contact-card,.doc-card,.resource-card,.more-tile{
+      border:1px solid rgba(18,63,45,.08);
+      box-shadow:var(--shadow)
+    }
+    button{transition:transform .14s ease,box-shadow .14s ease,background .14s ease}
+    button:active{transform:scale(.98)}
+    .hero-grid{gap:14px}
+    .hero-card{
+      position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at 85% 15%,rgba(217,174,61,.28),transparent 28%),
+        linear-gradient(135deg,#0f3828 0%,#1d6847 100%);
+      min-height:270px;
+      display:flex;flex-direction:column;justify-content:flex-end;
+      border:1px solid rgba(255,255,255,.09)
+    }
+    .hero-card:before{
+      content:"";position:absolute;inset:0;
+      background:linear-gradient(180deg,transparent 15%,rgba(7,31,21,.45) 100%);
+      pointer-events:none
+    }
+    .hero-card>*{position:relative;z-index:1}
+    .hero-kicker{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.11);padding:7px 10px;border-radius:999px;width:max-content;font-size:.75rem;font-weight:800;margin-bottom:10px}
+    .hero-actions button{border-radius:999px;padding:12px 16px}
+    .weather-card{border-radius:20px;background:linear-gradient(180deg,#fff,#f8fbf9)}
+    .metric-grid{grid-template-columns:repeat(4,1fr);margin:14px 0}
+    .metric{border-radius:18px;background:rgba(255,255,255,.86);backdrop-filter:blur(10px)}
+    .metric strong{font-size:1.8rem}
+    .section-title h2{font-size:2rem;letter-spacing:-.03em}
+    .premium-list{display:grid;gap:10px}
+    .premium-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 18px rgba(20,58,41,.05)}
+    .premium-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--green-3);font-size:1.25rem}
+    .premium-badge{font-size:.72rem;font-weight:800;border-radius:999px;padding:5px 8px;background:var(--gold-soft);color:#654d06}
+    .match-card{
+      border-radius:22px;padding:18px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:14px
+    }
+    .match-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}
+    .match-comp{font-size:.73rem;letter-spacing:.06em;text-transform:uppercase;font-weight:900;color:var(--green-2)}
+    .match-date{font-size:.78rem;color:var(--muted)}
+    .match-main{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;text-align:center}
+    .match-team strong{display:block;font-size:1.05rem}
+    .club-crest-small{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+    .versus{font-weight:900;color:var(--muted)}
+    .match-meta{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .match-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+    .match-actions button{border-radius:12px}
+    .bottom-nav{
+      position:fixed;left:50%;bottom:14px;transform:translateX(-50%);
+      width:min(94%,760px);padding:8px;
+      border-radius:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);
+      box-shadow:0 16px 40px rgba(13,45,31,.20);border:1px solid rgba(18,63,45,.09);
+      display:grid;grid-template-columns:repeat(5,1fr);z-index:40
+    }
+    .bottom-nav button{border-radius:16px;padding:8px 6px;color:#748078;background:transparent}
+    .bottom-nav button.active{background:var(--green);color:#fff;box-shadow:0 8px 18px rgba(18,63,45,.22)}
+    .bottom-nav button span{font-size:1.2rem}
+    .app-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:#edf3ef;color:#28533b;font-size:.72rem;font-weight:800}
+    .glass-card{background:rgba(255,255,255,.84);backdrop-filter:blur(12px)}
+    .empty-state{border:1px dashed #cdd8d0;border-radius:18px;padding:24px;text-align:center;background:#fafcfb}
+    @media(max-width:760px){
+      main{padding-left:16px;padding-right:16px}
+      .metric-grid{grid-template-columns:repeat(2,1fr)}
+      .hero-card{min-height:310px}
+      .match-main{grid-template-columns:1fr auto 1fr}
+      .bottom-nav{bottom:8px}
+    }
+
 </style>
 </head>
 <body>
@@ -298,7 +392,7 @@
   <section id="home" class="screen active">
     <div class="hero-grid">
       <div class="hero-card">
-        <h2 id="heroGreeting">Welcome to Bold Dragoon CC</h2>
+        <div class="hero-kicker">● Official club app</div><h2 id="heroGreeting">Welcome to Bold Dragoon CC</h2>
         <p>Everything happening across the club, ground and teams in one place.</p>
         <div class="hero-actions">
           <button onclick="showScreen('ground')">Open calendar</button>
@@ -317,6 +411,17 @@
       <div class="metric"><strong id="metricMembers">0</strong><span>Club members</span></div>
       <div class="metric"><strong id="metricResponses">0</strong><span>Availability responses</span></div>
     </div>
+    <div class="hero-grid">
+      <div class="card glass-card">
+        <div class="team-row"><div><span class="app-chip">NEXT MATCH</span><h3 style="margin-top:8px">Upcoming fixture</h3></div><button class="secondary" onclick="showScreen('fixtures')">All matches</button></div>
+        <div id="premiumNextMatch"></div>
+      </div>
+      <div class="card glass-card">
+        <div class="team-row"><div><span class="app-chip">TODAY</span><h3 style="margin-top:8px">At the ground</h3></div><button class="secondary" onclick="showScreen('ground')">Calendar</button></div>
+        <div id="premiumToday" class="premium-list"></div>
+      </div>
+    </div>
+
 
     <div class="hero">
       <div class="eyebrow">Club Hub</div>
@@ -529,7 +634,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 6.0 · Whole Club Operations</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 7.0 · Premium Mobile</div>
 
 
   <section id="operations" class="screen">
@@ -572,6 +677,9 @@
   <section id="more" class="screen">
     <div class="section-title"><div><h2>More</h2><p>Club information, documents, contacts and administration.</p></div></div>
     <div class="more-grid">
+      <button class="more-tile" onclick="showScreen('availability')"><b>✅ Availability</b><span class="meta">Respond for matches and training</span></button>
+      <button class="more-tile" onclick="showScreen('news')"><b>📣 News</b><span class="meta">Club announcements and updates</span></button>
+      <button class="more-tile" onclick="showScreen('operations')"><b>⚙️ Operations</b><span class="meta">Ground, rota and membership</span></button>
       <button class="more-tile" onclick="showScreen('wholeclub')"><b>👥 Members</b><span class="meta">Directory, roles and club sections</span></button>
 <button class="more-tile" onclick="showScreen('operations')"><b>⚙️ Operations</b><span class="meta">Ground status, rota and membership</span></button>
       <button class="more-tile" onclick="showScreen('club')"><b>📣 Club centre</b><span class="meta">Notices, training and admin tools</span></button>
@@ -1260,6 +1368,28 @@ function addSponsor(){
   closeModal("sponsorModal");save();toast("Sponsor added");
 }
 
+
+function renderPremiumHome(){
+  const now=new Date();
+  const upcoming=(data.fixtures||[]).filter(f=>new Date(f.date)>=now).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const f=upcoming[0];
+  premiumNextMatch.innerHTML=f?`<div class="match-card">
+    <div class="match-top"><span class="match-comp">${f.competition||"Club fixture"}</span><span class="match-date">${new Date(f.date).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})}</span></div>
+    <div class="match-main">
+      <div class="match-team"><img class="club-crest-small" src="bold-dragoon-logo.png"><strong>${f.team}</strong></div>
+      <div class="versus">VS</div>
+      <div class="match-team"><div class="club-crest-small" style="display:grid;place-items:center;background:#eef2ef;font-weight:900">${(f.opponent||"?").slice(0,2).toUpperCase()}</div><strong>${f.opponent}</strong></div>
+    </div>
+    <div class="match-meta"><span class="app-chip">🕒 ${new Date(f.date).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</span><span class="app-chip">📍 ${f.venue||"Venue TBC"}</span></div>
+    <div class="match-actions"><button onclick="showScreen('availability')">Available</button><button class="secondary" onclick="showScreen('availability')">Maybe</button><button class="secondary" onclick="showScreen('availability')">Unavailable</button></div>
+  </div>`:'<div class="empty-state"><strong>No upcoming fixtures</strong><p>Fixtures will appear here after they are added or synced.</p></div>';
+
+  const todayStart=new Date();todayStart.setHours(0,0,0,0);
+  const tomorrow=new Date(todayStart);tomorrow.setDate(tomorrow.getDate()+1);
+  const items=asCalendarItems().filter(e=>new Date(e.start)>=todayStart&&new Date(e.start)<tomorrow);
+  premiumToday.innerHTML=items.map(e=>`<div class="premium-item"><div class="premium-icon">${e.type==="Match"?"🏏":e.type==="Training"?"🎯":e.type==="Meeting"?"🗂️":"📍"}</div><div><strong>${e.title}</strong><div class="meta">${new Date(e.start).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})} · ${e.resource||"Ground"}</div></div><span class="premium-badge">${e.type}</span></div>`).join("")||'<div class="empty-state"><strong>Nothing scheduled today</strong><p>The ground diary is clear.</p></div>';
+}
+
 function renderClub(){
   document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
     <div class="item"><strong>${t.team}</strong><small>${fmtDate(t.date)}</small>
@@ -1299,7 +1429,7 @@ function removeTraining(id){if(confirm("Delete this session?")){data.training=da
 function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
 function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
 function resetDemo(){if(confirm("Reset everything to the original demo data? This will update the shared club database.")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
-function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();updatePlayCricketStatus();updateProfileUI()}
+function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();renderPremiumHome();updatePlayCricketStatus();updateProfileUI()}
 document.getElementById("calendarFrom").value=new Date().toISOString().slice(0,10);
 renderAll();
 connectSharedDatabase();

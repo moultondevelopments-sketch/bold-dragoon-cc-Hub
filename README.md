@@ -1,15 +1,13 @@
-# Bold Dragoon CC Hub — Professional Edition 6.0
+# Bold Dragoon CC Hub — Professional Edition 7.0
 
-Added:
-- Club operations centre
-- Ground status controls
-- Volunteer rota
-- Membership records
-- Club readiness indicators
-- Contact directory
-- Documents area
-- Sponsors area
-- Existing fixtures, availability, teams, news and calendar retained
-- Play-Cricket sync remains ready for the API token
+Focus of this release:
+- Premium mobile redesign
+- Five-tab native-style navigation
+- Improved spacing, typography, shadows and animation
+- New hero dashboard
+- Rich next-match card
+- Today-at-the-ground feed
+- Professional app shell and updated PWA manifest
+- Existing calendar, fixtures, teams, news, operations and Play-Cricket readiness retained
 
-This remains a club web app. Secure user authentication and private member data should be added before storing sensitive personal information.
+Play-Cricket API token remains pending.

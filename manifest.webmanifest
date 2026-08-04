@@ -1,12 +1,12 @@
 {
-  "name": "Bold Dragoon Cricket Club Hub",
-  "short_name": "Bold Dragoon CC",
+  "name": "Bold Dragoon Cricket Club",
+  "short_name": "Bold Dragoon",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f5f2e8",
-  "theme_color": "#183b2b",
-  "description": "Whole-club fixtures, availability, ground calendar and communications.",
+  "background_color": "#f4f3ec",
+  "theme_color": "#123f2d",
+  "description": "Official Bold Dragoon Cricket Club app for fixtures, teams, availability, ground calendar and club operations.",
   "icons": [
     {
       "src": "icon-192.png",
