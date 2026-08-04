@@ -563,6 +563,53 @@
       font-size:.75rem!important
     }
 
+
+    .fab{
+      position:fixed;right:18px;bottom:96px;z-index:45;width:58px;height:58px;
+      border-radius:50%;display:grid;place-items:center;font-size:1.5rem;
+      background:linear-gradient(135deg,var(--gold),#efc85b);color:#173d2d;
+      box-shadow:0 14px 30px rgba(20,58,41,.25)
+    }
+    .fab-menu{
+      position:fixed;right:18px;bottom:164px;z-index:46;width:230px;
+      background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px;
+      box-shadow:var(--shadow);display:none
+    }
+    .fab-menu.show{display:grid;gap:8px}
+    .fab-menu button{width:100%;text-align:left}
+    .result-card{
+      border-radius:18px;background:#fff;border:1px solid var(--line);padding:14px;
+      box-shadow:0 8px 20px rgba(20,58,41,.06)
+    }
+    .result-score{font-size:1.25rem;font-weight:950;color:var(--green)}
+    .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .admin-tile{padding:15px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 20px rgba(20,58,41,.05)}
+    .admin-tile h4{margin:0 0 6px}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .form-grid .full{grid-column:1/-1}
+    .member-card-pro{
+      display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;
+      padding:13px;border-radius:16px;background:#fff;border:1px solid var(--line)
+    }
+    .member-avatar{
+      width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#d9ae3d,#f2d77b);
+      display:grid;place-items:center;font-weight:950;color:#173d2d
+    }
+    .status-row{display:flex;gap:8px;flex-wrap:wrap}
+    .filter-row{display:flex;gap:8px;overflow:auto;margin-bottom:12px}
+    .filter-row button{white-space:nowrap}
+    .filter-row button.active{background:var(--green);color:#fff}
+    .setup-checklist{display:grid;gap:9px}
+    .setup-item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px;border-radius:13px;background:#f7faf8}
+    .setup-item.done{background:#eaf5ee}
+    .setup-icon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e3eae5;font-weight:900}
+    .setup-item.done .setup-icon{background:#2f8f57;color:white}
+    @media(max-width:760px){
+      .form-grid{grid-template-columns:1fr}
+      .form-grid .full{grid-column:auto}
+      .fab{bottom:92px}
+    }
+
 </style>
 </head>
 <body>
@@ -817,6 +864,15 @@
     </div>
   </section>
 
+
+  <section id="results" class="screen">
+    <div class="section-title">
+      <div><h2>Results</h2><p>Manual results until Play-Cricket syncing is available.</p></div>
+      <button onclick="openModal('resultModal')">+ Add result</button>
+    </div>
+    <div id="resultsList" class="news-grid"></div>
+  </section>
+
   <section id="availability" class="screen">
     <div class="section-title">
       <div><h2>Availability</h2><p>Respond for yourself and see the squad position.</p></div>
@@ -897,7 +953,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 11.0 · Stable App</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 12.0 · Complete Club App</div>
 
 
   <section id="operations" class="screen">
@@ -938,6 +994,24 @@
   </section>
 
 
+
+
+  <section id="adminCentre" class="screen">
+    <div class="section-title"><div><h2>Admin centre</h2><p>Run the club without waiting for Play-Cricket.</p></div></div>
+    <div class="admin-grid">
+      <button class="admin-tile" onclick="openModal('fixtureModal')"><h4>🏏 Fixtures</h4><span class="meta">Add and manage fixtures manually</span></button>
+      <button class="admin-tile" onclick="openModal('resultModal')"><h4>🏆 Results</h4><span class="meta">Record completed matches</span></button>
+      <button class="admin-tile" onclick="openModal('eventModal')"><h4>📅 Ground diary</h4><span class="meta">Bookings, training and events</span></button>
+      <button class="admin-tile" onclick="openModal('newsModal')"><h4>📣 Club news</h4><span class="meta">Publish whole-club notices</span></button>
+      <button class="admin-tile" onclick="openModal('memberModal')"><h4>👥 Members</h4><span class="meta">Add club members and roles</span></button>
+      <button class="admin-tile" onclick="showScreen('operations')"><h4>⚙️ Operations</h4><span class="meta">Ground status, rota and membership</span></button>
+    </div>
+
+    <div class="card">
+      <h3>Setup checklist</h3>
+      <div id="setupChecklist" class="setup-checklist"></div>
+    </div>
+  </section>
 
   <section id="accountAdmin" class="screen">
     <div class="section-title"><div><h2>Account</h2><p>Your secure profile, role and permissions.</p></div></div>
@@ -982,10 +1056,12 @@
     <div class="section-title"><div><h2>More</h2><p>Club information, documents, contacts and administration.</p></div></div>
     <div class="more-grid">
       <button class="more-tile" onclick="showScreen('messages')"><b>💬 Message centre</b><span class="meta">Club and team conversations</span></button>
+<button class="more-tile" onclick="showScreen('results')"><b>🏆 Results</b><span class="meta">Manual score and result entry</span></button>
 <button class="more-tile" onclick="showScreen('availability')"><b>✅ Availability</b><span class="meta">Respond for matches and training</span></button>
       <button class="more-tile" onclick="showScreen('news')"><b>📣 News</b><span class="meta">Club announcements and updates</span></button>
       <button class="more-tile" onclick="showScreen('operations')"><b>⚙️ Operations</b><span class="meta">Ground, rota and membership</span></button>
-      <button class="more-tile" onclick="showScreen('wholeclub')"><b>👥 Members</b><span class="meta">Directory, roles and club sections</span></button>
+      <button class="more-tile" onclick="showScreen('adminCentre')"><b>🛠️ Admin centre</b><span class="meta">Fixtures, news, results and members</span></button>
+<button class="more-tile" onclick="showScreen('wholeclub')"><b>👥 Members</b><span class="meta">Directory, roles and club sections</span></button>
 <button class="more-tile" onclick="showScreen('operations')"><b>⚙️ Operations</b><span class="meta">Ground status, rota and membership</span></button>
       <button class="more-tile" onclick="showScreen('club')"><b>📣 Club centre</b><span class="meta">Notices, training and admin tools</span></button>
       <div class="more-tile"><b>📄 Documents</b><span class="meta">Policies, membership and safeguarding</span></div>
@@ -1011,6 +1087,23 @@
 
 
 
+
+
+<div id="resultModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add result</h3><button class="close" onclick="closeModal('resultModal')">✕</button></div>
+    <div class="form-grid">
+      <div><label>Team</label><input id="resTeam" placeholder="1st XI"></div>
+      <div><label>Opponent</label><input id="resOpponent"></div>
+      <div><label>Date</label><input id="resDate" type="date"></div>
+      <div><label>Outcome</label><select id="resOutcome"><option>Won</option><option>Lost</option><option>Tied</option><option>Abandoned</option><option>No result</option></select></div>
+      <div><label>Bold Dragoon score</label><input id="resClubScore" placeholder="245/7"></div>
+      <div><label>Opponent score</label><input id="resOppScore" placeholder="201 all out"></div>
+      <div class="full"><label>Summary</label><textarea id="resSummary" placeholder="Won by 44 runs"></textarea></div>
+    </div>
+    <div class="button-row"><button onclick="addResult()">Save result</button></div>
+  </div>
+</div>
 
 <div id="channelModal" class="modal">
   <div class="modal-box">
@@ -1170,7 +1263,7 @@
 <div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const KEY = "boldDragoonCCDataV11";
+const KEY = "boldDragoonCCDataV12";
 const PROFILE_KEY = "boldDragoonCCCurrentPlayer";
 let currentPlayerId = localStorage.getItem(PROFILE_KEY) || "";
 let supabaseClient = null;
@@ -1190,6 +1283,7 @@ data.clubSections=data.clubSections||[];
 data.members=data.members||[];
 data.groundStatus=data.groundStatus||"Open";
 data.news=data.news||[];
+data.results=data.results||[];
 data.messageChannels=data.messageChannels||[];
 data.messages=data.messages||[];
 data.messageRead=data.messageRead||{};
@@ -2189,6 +2283,77 @@ function createMessageChannel(){
   toast("Channel created");
 }
 
+
+function toggleFabMenu(force){
+  const show=typeof force==="boolean"?force:!fabMenu.classList.contains("show");
+  fabMenu.classList.toggle("show",show);
+}
+
+function addResult(){
+  if(!resTeam.value.trim()||!resOpponent.value.trim()||!resDate.value){
+    alert("Please add the team, opponent and date.");return;
+  }
+  data.results.push({
+    id:crypto.randomUUID(),
+    team:resTeam.value.trim(),
+    opponent:resOpponent.value.trim(),
+    date:resDate.value,
+    outcome:resOutcome.value,
+    clubScore:resClubScore.value.trim(),
+    opponentScore:resOppScore.value.trim(),
+    summary:resSummary.value.trim(),
+    source:"manual"
+  });
+  closeModal("resultModal");
+  save();
+  toast("Result saved");
+}
+
+function renderResults(){
+  const list=[...(data.results||[])].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  resultsList.innerHTML=list.map(r=>`<div class="result-card">
+    <div class="team-row">
+      <div><strong>${escapeMessage(r.team)} v ${escapeMessage(r.opponent)}</strong>
+      <div class="meta">${new Date(r.date+"T12:00").toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}</div></div>
+      <span class="app-chip">${escapeMessage(r.outcome)}</span>
+    </div>
+    <div class="result-score">${escapeMessage(r.clubScore||"—")} · ${escapeMessage(r.opponentScore||"—")}</div>
+    <div class="meta">${escapeMessage(r.summary||"")}</div>
+  </div>`).join("")||'<div class="empty-state"><strong>No results recorded</strong><p>Add results manually until the Play-Cricket API is connected.</p></div>';
+}
+
+function renderSetupChecklist(){
+  const items=[
+    {done:sharedDatabaseConnected,label:"Shared club database connected"},
+    {done:!!currentAuthUser,label:"Secure account signed in"},
+    {done:isApprovedMember(),label:"Committee approval completed"},
+    {done:!!liveWeather?.current,label:"Live ground weather working"},
+    {done:(data.fixtures||[]).length>0,label:"At least one fixture added"},
+    {done:(data.members||[]).length>0,label:"At least one club member added"},
+    {done:(data.news||[]).length>0,label:"Club news area ready"},
+    {done:true,label:"Message centre installed"},
+    {done:true,label:"Junior consent controls installed"},
+    {done:false,label:"Play-Cricket API pending"}
+  ];
+  setupChecklist.innerHTML=items.map(i=>`<div class="setup-item ${i.done?"done":""}">
+    <div class="setup-icon">${i.done?"✓":"•"}</div><div><strong>${i.label}</strong></div>
+  </div>`).join("");
+}
+
+function renderProfessionalMembers(){
+  const container=document.getElementById("memberList")||document.getElementById("membersList");
+  if(!container)return;
+  const members=data.members||[];
+  container.innerHTML=members.map(m=>{
+    const initials=String(m.name||"M").split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase();
+    return `<div class="member-card-pro">
+      <div class="member-avatar">${initials}</div>
+      <div><strong>${escapeMessage(m.name||"Member")}</strong><div class="meta">${escapeMessage(m.role||"Member")} · ${escapeMessage(m.team||m.section||"Club")}</div></div>
+      <span class="app-chip">${escapeMessage(m.memberType||"Member")}</span>
+    </div>`;
+  }).join("")||'<p class="empty">No members added yet.</p>';
+}
+
 function renderClub(){
   document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
     <div class="item"><strong>${t.team}</strong><small>${fmtDate(t.date)}</small>
@@ -2245,10 +2410,11 @@ function renderAllSafe(){
   [
     ["home",()=>renderHome()],
     ["fixtures",()=>renderFixtures()],
+    ["results",()=>renderResults()],
     ["availability",()=>renderAvailability()],
     ["team selection",()=>renderTeamSelection()],
     ["club",()=>renderClub()],
-    ["members",()=>renderWholeClub()],
+    ["members",()=>{renderWholeClub();renderProfessionalMembers()}],
     ["teams",()=>renderTeams()],
     ["news",()=>renderNews()],
     ["messages",()=>renderMessages()],
@@ -2260,7 +2426,8 @@ function renderAllSafe(){
     ["premium home",()=>renderPremiumHome()],
     ["app experience",()=>renderAppExperience()],
     ["Play-Cricket status",()=>updatePlayCricketStatus()],
-    ["profile",()=>updateProfileUI()]
+    ["profile",()=>updateProfileUI()],
+    ["setup checklist",()=>renderSetupChecklist()]
   ].forEach(([name,fn])=>safeRun(name,fn));
 }
 
@@ -2299,6 +2466,16 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
+
+
+<button class="fab" onclick="toggleFabMenu()">＋</button>
+<div id="fabMenu" class="fab-menu">
+  <button onclick="openModal('fixtureModal');toggleFabMenu(false)">🏏 Add fixture</button>
+  <button onclick="openModal('eventModal');toggleFabMenu(false)">📅 Add ground event</button>
+  <button onclick="openModal('newsModal');toggleFabMenu(false)">📣 Add club notice</button>
+  <button onclick="openModal('memberModal');toggleFabMenu(false)">👤 Add member</button>
+  <button onclick="openModal('resultModal');toggleFabMenu(false)">🏆 Add result</button>
+</div>
 
 </body>
 </html>

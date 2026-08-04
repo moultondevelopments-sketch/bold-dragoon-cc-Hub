@@ -1,4 +1,4 @@
-const CACHE = "bold-dragoon-hub-v11";
+const CACHE = "bold-dragoon-hub-v12";
 const ASSETS = [
   "./",
   "./index.html",

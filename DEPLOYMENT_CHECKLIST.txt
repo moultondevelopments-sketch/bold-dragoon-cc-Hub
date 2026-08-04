@@ -1,0 +1,17 @@
+BOLD DRAGOON CC V12 DEPLOYMENT CHECKLIST
+
+[ ] Upload every file and the complete netlify folder to GitHub
+[ ] Commit directly to main
+[ ] Confirm Netlify says Published
+[ ] Open in Safari and refresh
+[ ] Confirm live weather appears
+[ ] Confirm Home, Calendar, Matches, Teams and More tabs open
+[ ] Confirm Add Fixture works
+[ ] Confirm Add Ground Event works
+[ ] Confirm Add Result works
+[ ] Confirm Messages opens
+[ ] Run SUPABASE_SETUP.sql if database still says Local mode
+[ ] Run SUPABASE_SECURE_AUTH.sql
+[ ] Enable Email authentication
+[ ] Create and approve first committee account
+[ ] Remove/re-add Home Screen app if an old cached version remains
