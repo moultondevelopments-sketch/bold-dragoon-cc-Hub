@@ -494,9 +494,83 @@
     }
     .read-only-compose{opacity:.58;pointer-events:none}
 
+
+    .auth-screen{
+      position:fixed;inset:0;z-index:100;background:
+      radial-gradient(circle at 80% 15%,rgba(217,174,61,.25),transparent 28%),
+      linear-gradient(145deg,#0d3224,#1c6846);
+      display:none;align-items:center;justify-content:center;padding:20px
+    }
+    .auth-screen.show{display:flex}
+    .auth-card{
+      width:min(100%,460px);background:#fff;border-radius:26px;padding:24px;
+      box-shadow:0 26px 70px rgba(0,0,0,.28)
+    }
+    .auth-brand{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+    .auth-brand img{width:66px;height:66px;border-radius:50%;object-fit:cover}
+    .auth-brand h1{font-size:1.35rem;margin:0}.auth-brand p{margin:3px 0 0;color:var(--muted)}
+    .auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#edf2ee;padding:5px;border-radius:14px;margin-bottom:15px}
+    .auth-tabs button{background:transparent;color:var(--muted)}
+    .auth-tabs button.active{background:#fff;color:var(--green);box-shadow:0 4px 12px rgba(20,58,41,.08)}
+    .auth-message{font-size:.8rem;margin:10px 0;padding:10px;border-radius:11px;display:none}
+    .auth-message.error{display:block;background:#fdeaea;color:#8d2929}
+    .auth-message.success{display:block;background:#e8f5ec;color:#24683e}
+    .account-menu{
+      position:absolute;right:14px;top:78px;z-index:80;width:260px;background:#fff;
+      border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:var(--shadow);display:none
+    }
+    .account-menu.show{display:block}
+    .account-menu button{width:100%;margin-top:8px}
+    .role-label{display:inline-flex;padding:5px 8px;border-radius:999px;background:var(--gold-soft);color:#654d06;font-size:.7rem;font-weight:900}
+    .weather-live{
+      display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center
+    }
+    .weather-main-icon{font-size:2.8rem}
+    .weather-temp{font-size:2rem;font-weight:950;color:var(--green)}
+    .weather-details{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}
+    .weather-detail{padding:5px 8px;border-radius:999px;background:#edf3ef;color:#31533f;font-size:.7rem;font-weight:800}
+    .weather-updated{font-size:.68rem;color:var(--muted);margin-top:8px}
+    .weather-alert{
+      margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff4d8;
+      border:1px solid #e4c66a;color:#5b4914;font-size:.8rem
+    }
+    .permission-note{padding:10px 12px;border-radius:12px;background:#eef4f0;color:#31533f;font-size:.78rem;margin-top:10px}
+    .hidden-by-role{display:none!important}
+
 </style>
 </head>
 <body>
+
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <img src="bold-dragoon-logo.png" alt="Bold Dragoon CC">
+      <div><h1>Bold Dragoon Cricket Club</h1><p>Secure member access</p></div>
+    </div>
+    <div class="auth-tabs">
+      <button id="signInTab" class="active" onclick="setAuthMode('signin')">Sign in</button>
+      <button id="registerTab" onclick="setAuthMode('register')">Register</button>
+    </div>
+    <div id="registerFields" style="display:none">
+      <label>Full name</label><input id="authName" autocomplete="name">
+      <label>Member type</label>
+      <select id="authMemberType">
+        <option>Adult member</option>
+        <option>Junior member</option>
+        <option>Parent / guardian</option>
+        <option>Coach / captain</option>
+        <option>Committee</option>
+      </select>
+      <label>Team / section</label><input id="authTeam" placeholder="e.g. 1st XI, U12, Parent">
+    </div>
+    <label>Email</label><input id="authEmail" type="email" autocomplete="email">
+    <label>Password</label><input id="authPassword" type="password" autocomplete="current-password">
+    <div id="authMessage" class="auth-message"></div>
+    <button id="authSubmitButton" style="width:100%" onclick="submitAuth()">Sign in</button>
+    <div class="permission-note">New accounts require committee approval before gaining club permissions. Junior messaging remains read-only until guardian consent is approved.</div>
+  </div>
+</div>
+
 <header>
   <div class="header-inner">
     <img class="crest" src="bold-dragoon-logo.png" alt="Bold Dragoon CC badge">
@@ -510,6 +584,16 @@
     </button>
   </div>
 </header>
+
+<div id="accountMenu" class="account-menu">
+  <strong id="accountName">Member</strong>
+  <div id="accountEmail" class="meta"></div>
+  <div style="margin-top:8px"><span id="accountRole" class="role-label">Pending</span></div>
+  <div id="accountApproval" class="permission-note"></div>
+  <button class="secondary" onclick="showScreen('accountAdmin');toggleAccountMenu(false)">Account settings</button>
+  <button onclick="signOutMember()">Sign out</button>
+</div>
+
 
 <div id="storageNotice" class="status-bar">
   <div class="status-panel">
@@ -543,9 +627,12 @@
         </div>
       </div>
       <div class="card weather-card">
-        <div class="weather-icon">⛅</div>
-        <div><strong>Match-day weather</strong><div class="meta">Weather will appear here when live weather is connected.</div><span class="status-pill status-open" id="groundStatusPill">Ground open</span></div>
+      <div id="liveWeatherContent" class="weather-live">
+        <div class="weather-main-icon">⛅</div>
+        <div><strong>Loading ground weather…</strong><div class="meta">Rushmere Road, Northampton</div></div>
       </div>
+      <div id="weatherAlert"></div>
+    </div>
     </div>
     <div class="metric-grid">
       <div class="metric"><strong id="metricFixtures">0</strong><span>Upcoming fixtures</span></div>
@@ -783,7 +870,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 9.1 · Junior Consent Controls</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 10.0 · Secure Accounts & Live Weather</div>
 
 
   <section id="operations" class="screen">
@@ -823,6 +910,20 @@
     </div>
   </section>
 
+
+
+  <section id="accountAdmin" class="screen">
+    <div class="section-title"><div><h2>Account</h2><p>Your secure profile, role and permissions.</p></div></div>
+    <div class="card">
+      <div class="team-row"><div><h3 id="secureProfileName">Member</h3><div id="secureProfileEmail" class="meta"></div></div><span id="secureProfileRole" class="role-label">Pending</span></div>
+      <div id="secureProfileStatus" class="permission-note"></div>
+    </div>
+    <div id="committeeApprovalCard" class="card hidden-by-role">
+      <h3>Account approvals</h3>
+      <p class="meta">Committee administrators can approve members and assign roles.</p>
+      <div id="pendingAccounts" class="news-grid"></div>
+    </div>
+  </section>
 
   <section id="messages" class="screen">
     <div class="section-title">
@@ -1600,6 +1701,219 @@ function renderPremiumHome(){
 
 let fixtureView="upcoming";
 
+let supabaseClient=null;
+let currentAuthUser=null;
+let currentSecureProfile=null;
+let authMode="signin";
+let liveWeather=null;
+
+function setAuthMode(mode){
+  authMode=mode;
+  signInTab.classList.toggle("active",mode==="signin");
+  registerTab.classList.toggle("active",mode==="register");
+  registerFields.style.display=mode==="register"?"block":"none";
+  authSubmitButton.textContent=mode==="register"?"Create account":"Sign in";
+  authMessage.className="auth-message";
+  authMessage.textContent="";
+}
+
+async function initSecureAccount(){
+  try{
+    const cfgRes=await fetch("/.netlify/functions/supabase-config",{cache:"no-store"});
+    const cfg=await cfgRes.json();
+    if(!cfg.url||!cfg.anonKey) throw new Error("Supabase configuration is missing");
+    if(!window.supabase?.createClient) throw new Error("Supabase authentication library is unavailable");
+    supabaseClient=window.supabase.createClient(cfg.url,cfg.anonKey);
+    const {data:{session}}=await supabaseClient.auth.getSession();
+    await handleAuthSession(session);
+    supabaseClient.auth.onAuthStateChange(async(_event,newSession)=>{await handleAuthSession(newSession)});
+  }catch(err){
+    console.warn("Secure account setup:",err);
+    authScreen.classList.add("show");
+    showAuthMessage("Secure sign-in is not configured yet. Run SUPABASE_SECURE_AUTH.sql and confirm Supabase Auth is enabled.","error");
+  }
+}
+
+async function handleAuthSession(session){
+  currentAuthUser=session?.user||null;
+  if(!currentAuthUser){
+    currentSecureProfile=null;
+    authScreen.classList.add("show");
+    return;
+  }
+  authScreen.classList.remove("show");
+  await ensureSecureProfile();
+  renderSecureAccount();
+  renderAll();
+}
+
+async function ensureSecureProfile(){
+  if(!supabaseClient||!currentAuthUser)return;
+  const {data,error}=await supabaseClient.from("club_profiles").select("*").eq("id",currentAuthUser.id).maybeSingle();
+  if(error && error.code!=="PGRST116") console.warn(error);
+  if(data){currentSecureProfile=data;return}
+  const metadata=currentAuthUser.user_metadata||{};
+  const profile={
+    id:currentAuthUser.id,
+    email:currentAuthUser.email||"",
+    full_name:metadata.full_name||"",
+    member_type:metadata.member_type||"Adult member",
+    team:metadata.team||"",
+    role:"pending",
+    approved:false,
+    junior_messaging_consent:false
+  };
+  const result=await supabaseClient.from("club_profiles").insert(profile).select().single();
+  currentSecureProfile=result.data||profile;
+}
+
+async function submitAuth(){
+  if(!supabaseClient){showAuthMessage("Secure sign-in is not ready yet.","error");return}
+  const email=authEmail.value.trim();
+  const password=authPassword.value;
+  if(!email||!password){showAuthMessage("Enter your email and password.","error");return}
+  authSubmitButton.disabled=true;
+  try{
+    if(authMode==="register"){
+      const name=authName.value.trim();
+      if(!name){throw new Error("Enter your full name")}
+      const {error}=await supabaseClient.auth.signUp({
+        email,password,
+        options:{data:{full_name:name,member_type:authMemberType.value,team:authTeam.value.trim()}}
+      });
+      if(error)throw error;
+      showAuthMessage("Account created. Check your email if confirmation is required. A committee administrator must approve the account.","success");
+    }else{
+      const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error)throw error;
+    }
+  }catch(err){
+    showAuthMessage(err.message||"Unable to continue","error");
+  }finally{
+    authSubmitButton.disabled=false;
+  }
+}
+
+function showAuthMessage(message,type){
+  authMessage.textContent=message;
+  authMessage.className=`auth-message ${type}`;
+}
+
+async function signOutMember(){
+  if(supabaseClient)await supabaseClient.auth.signOut();
+  toggleAccountMenu(false);
+}
+
+function toggleAccountMenu(force){
+  const show=typeof force==="boolean"?force:!accountMenu.classList.contains("show");
+  accountMenu.classList.toggle("show",show);
+}
+
+function secureRole(){
+  return currentSecureProfile?.role||"pending";
+}
+
+function isApprovedMember(){
+  return currentSecureProfile?.approved===true;
+}
+
+function isCommitteeAdmin(){
+  return isApprovedMember()&&["committee","admin","welfare"].includes(secureRole());
+}
+
+function renderSecureAccount(){
+  const profile=currentSecureProfile||{};
+  const name=profile.full_name||currentAuthUser?.email||"Member";
+  accountName.textContent=name;
+  accountEmail.textContent=currentAuthUser?.email||"";
+  accountRole.textContent=profile.approved?(profile.role||"member"):"Pending approval";
+  accountApproval.textContent=profile.approved
+    ?"Your club account is approved."
+    :"Your account is awaiting committee approval. Messaging and private club features remain restricted.";
+  secureProfileName.textContent=name;
+  secureProfileEmail.textContent=currentAuthUser?.email||"";
+  secureProfileRole.textContent=profile.approved?(profile.role||"member"):"Pending";
+  secureProfileStatus.textContent=accountApproval.textContent;
+  committeeApprovalCard.classList.toggle("hidden-by-role",!isCommitteeAdmin());
+  if(isCommitteeAdmin())loadPendingAccounts();
+}
+
+async function loadPendingAccounts(){
+  if(!supabaseClient||!isCommitteeAdmin())return;
+  const {data,error}=await supabaseClient.from("club_profiles").select("*").eq("approved",false).order("created_at");
+  if(error){pendingAccounts.innerHTML=`<p class="empty">${escapeMessage(error.message)}</p>`;return}
+  pendingAccounts.innerHTML=(data||[]).map(p=>`<div class="contact-card">
+    <div><strong>${escapeMessage(p.full_name||p.email)}</strong><div class="meta">${escapeMessage(p.member_type)} · ${escapeMessage(p.team||"No team")}</div><div class="meta">${escapeMessage(p.email||"")}</div></div>
+    <div><select id="role-${p.id}"><option value="member">Member</option><option value="parent">Parent</option><option value="coach">Coach</option><option value="captain">Captain</option><option value="committee">Committee</option><option value="welfare">Welfare</option></select><button onclick="approveAccount('${p.id}')">Approve</button></div>
+  </div>`).join("")||'<p class="empty">No accounts awaiting approval.</p>';
+}
+
+async function approveAccount(id){
+  if(!isCommitteeAdmin())return;
+  const role=document.getElementById(`role-${id}`).value;
+  const {error}=await supabaseClient.from("club_profiles").update({approved:true,role,updated_at:new Date().toISOString()}).eq("id",id);
+  if(error){alert(error.message);return}
+  toast("Account approved");
+  loadPendingAccounts();
+}
+
+function secureMessagingAllowed(channelId){
+  if(!currentAuthUser||!isApprovedMember())return false;
+  const profile=currentSecureProfile||{};
+  if(["committee","admin","welfare","coach","captain"].includes(profile.role))return true;
+  if(profile.member_type!=="Junior member")return true;
+  return channelId==="junior-cricket"&&profile.junior_messaging_consent===true;
+}
+
+async function loadLiveWeather(){
+  try{
+    const response=await fetch("/.netlify/functions/ground-weather",{cache:"no-store"});
+    const payload=await response.json();
+    if(!response.ok)throw new Error(payload.error||"Weather unavailable");
+    liveWeather=payload;
+    renderLiveWeather();
+  }catch(err){
+    liveWeatherContent.innerHTML=`<div class="weather-main-icon">⚠️</div><div><strong>Weather unavailable</strong><div class="meta">${escapeMessage(err.message)}</div></div>`;
+  }
+}
+
+function weatherDescription(code){
+  if(code===0)return["Clear","☀️"];
+  if([1,2].includes(code))return["Partly cloudy","🌤️"];
+  if(code===3)return["Overcast","☁️"];
+  if([45,48].includes(code))return["Fog","🌫️"];
+  if([51,53,55,56,57].includes(code))return["Drizzle","🌦️"];
+  if([61,63,65,66,67,80,81,82].includes(code))return["Rain","🌧️"];
+  if([71,73,75,77,85,86].includes(code))return["Snow","🌨️"];
+  if([95,96,99].includes(code))return["Thunderstorms","⛈️"];
+  return["Mixed conditions","🌥️"];
+}
+
+function renderLiveWeather(){
+  if(!liveWeather?.current)return;
+  const c=liveWeather.current;
+  const [description,icon]=weatherDescription(c.weather_code);
+  const rainChance=liveWeather.hourly?.precipitation_probability?.[0]??0;
+  liveWeatherContent.innerHTML=`<div class="weather-main-icon">${icon}</div>
+    <div><strong>${description}</strong><div class="meta">${liveWeather.location}</div>
+      <div class="weather-details">
+        <span class="weather-detail">Feels ${Math.round(c.apparent_temperature)}°C</span>
+        <span class="weather-detail">Rain ${Math.round(c.precipitation||0)} mm</span>
+        <span class="weather-detail">Wind ${Math.round(c.wind_speed_10m)} km/h</span>
+        <span class="weather-detail">Gusts ${Math.round(c.wind_gusts_10m)} km/h</span>
+      </div>
+      <div class="weather-updated">Updated ${new Date(liveWeather.fetchedAt).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div>
+    </div>
+    <div class="weather-temp">${Math.round(c.temperature_2m)}°</div>`;
+  const todayRain=liveWeather.daily?.precipitation_probability_max?.[0]??rainChance;
+  let alertText="";
+  if(todayRain>=70)alertText="High chance of rain today — check covers, pitch and training arrangements.";
+  else if((c.wind_gusts_10m||0)>=50)alertText="Strong gusts expected — review nets, gazebos and loose equipment.";
+  else if((c.precipitation||0)>0)alertText="Rain is currently being recorded at the ground.";
+  weatherAlert.innerHTML=alertText?`<div class="weather-alert">⚠️ ${alertText}</div>`:"";
+}
+
+
 function appGreeting(){
   const hour=new Date().getHours();
   return hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";
@@ -1715,7 +2029,7 @@ function channelUnreadCount(channelId){
 }
 
 
-function juniorMessagingAllowed(channelId){
+function legacyJuniorMessagingAllowed(channelId){
   const profile=loadProfile()||{};
   const memberType=profile.memberType||"Adult member";
   const role=String(profile.role||"").toLowerCase();
@@ -1738,14 +2052,14 @@ function juniorMessagingAllowed(channelId){
 
 function applyMessagingConsentState(){
   if(!messageComposer||!messageConsentWarning) return;
-  const allowed=juniorMessagingAllowed(activeMessageChannel);
+  const allowed=secureMessagingAllowed(activeMessageChannel);
   messageComposer.classList.toggle("read-only-compose",!allowed);
   messageConsentWarning.style.display=allowed?"none":"block";
   if(!allowed){
     const profile=loadProfile()||{};
     messageConsentWarning.textContent=
       (profile.memberType==="Junior member")
-      ? "Junior messaging is read-only until a parent, guardian, coach or committee administrator records consent."
+      ? "Messaging is read-only until your secure account is approved and any required junior consent is recorded."
       : "You do not have permission to post in this channel.";
   }
 }
@@ -1796,7 +2110,7 @@ function markChannelRead(showToast=true){
 }
 
 function sendClubMessage(){
-  if(!juniorMessagingAllowed(activeMessageChannel)){alert("Messaging is read-only until consent is granted.");return}
+  if(!secureMessagingAllowed(activeMessageChannel)){alert("Messaging is read-only until consent is granted.");return}
   const text=messageInput.value.trim();
   if(!text){return}
   const identity=currentMemberIdentity();
@@ -1876,6 +2190,8 @@ function renderAll(){renderHome();renderFixtures();renderAvailability();renderTe
 document.getElementById("calendarFrom").value=new Date().toISOString().slice(0,10);
 renderAll();
 connectSharedDatabase();
+initSecureAccount();
+loadLiveWeather();
 </script>
 
 <script>

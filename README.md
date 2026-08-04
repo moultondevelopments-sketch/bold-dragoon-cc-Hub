@@ -1,13 +1,26 @@
-# Bold Dragoon CC Hub — Professional Edition 9.1
+# Bold Dragoon CC Hub — Professional Edition 10.0
 
-Added junior messaging consent controls:
-- Junior members are read-only by default
-- Juniors cannot post unless consent is recorded
-- Parents/guardians, coaches/captains and committee members can post
-- Junior consent is stored in the member profile
-- The composer is visibly disabled when messaging is not allowed
+Added:
+- Secure Supabase email/password authentication
+- Registration and sign-in screen
+- Committee approval workflow
+- Adult, junior, parent, coach, captain, committee and welfare roles
+- Server-side Row Level Security policies
+- Server-enforced junior messaging consent
+- Committee account approval screen
+- Live weather for Bold Dragoon CC at Rushmere Road, Northampton
+- Current temperature, conditions, apparent temperature, rain, wind and gusts
+- Weather warnings for rain and strong gusts
+- Weather refreshed through a Netlify serverless function
 
-Important:
-This is still an interface-level control using the app's shared state.
-For genuine safeguarding and privacy, secure logins and server-enforced permissions
-must be added before the message centre is used for confidential or safeguarding matters.
+Setup required:
+1. Run SUPABASE_SECURE_AUTH.sql in Supabase SQL Editor.
+2. In Supabase Authentication, enable Email provider.
+3. Create the first account.
+4. In Supabase SQL Editor, approve the first committee administrator manually:
+   update public.club_profiles
+   set approved=true, role='committee'
+   where email='YOUR_EMAIL_ADDRESS';
+5. Redeploy Netlify after uploading these files.
+
+The weather uses Open-Meteo and does not require an API key.
