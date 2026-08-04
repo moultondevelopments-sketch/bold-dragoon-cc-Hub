@@ -172,7 +172,38 @@
       .availability-actions button{min-height:46px}
       .dashboard-grid{grid-template-columns:1fr}
     }
-  </style>
+  
+    .calendar-toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:14px}
+    .calendar-day{margin-bottom:14px}
+    .calendar-day-title{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#edf3ef;border-radius:12px;margin-bottom:8px}
+    .calendar-event{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:start;padding:12px;border:1px solid #e2e6e2;border-radius:14px;margin-bottom:8px;background:white}
+    .event-dot{width:10px;height:10px;border-radius:50%;margin-top:5px;background:#557}
+    .event-dot.Match{background:#1f6a3b}.event-dot.Training{background:#2f73b8}.event-dot.Maintenance{background:#b87821}.event-dot.Booking{background:#7437a8}.event-dot.Meeting{background:#666}.event-dot.Social{background:#b83a6a}
+    .calendar-event .time{font-weight:800;color:var(--green);white-space:nowrap}
+    .calendar-event .resource{font-size:.78rem;color:var(--muted);margin-top:3px}
+    .clash{border-color:#d66;background:#fff5f5}
+    .clash-badge{display:inline-block;background:#f8e4e4;color:#8b2525;border-radius:999px;padding:3px 8px;font-size:.72rem;font-weight:800}
+    .sync-panel{border:1px solid #d9e5dc;background:#f7fbf8;border-radius:14px;padding:14px;margin-bottom:14px}
+    .sync-status{font-size:.85rem;color:var(--muted);margin-top:8px}
+    .today-strip{display:grid;gap:8px}
+    .today-item{display:flex;gap:10px;align-items:center;padding:10px;background:#f7f9f7;border-radius:12px}
+    .today-time{min-width:58px;font-weight:800;color:var(--green)}
+    @media(max-width:700px){.calendar-toolbar{grid-template-columns:1fr 1fr}.calendar-toolbar button{grid-column:1/-1}}
+
+
+    .role-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+    .role-card{border:1px solid #dfe6df;border-radius:14px;padding:12px;background:#fff}
+    .role-card strong{display:block;margin-bottom:4px}
+    .admin-note{background:#fff7df;border:1px solid #e3c56a;padding:12px;border-radius:12px;color:#604d15}
+    .resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+    .resource-card{padding:12px;border:1px solid #dfe6df;border-radius:14px;background:#f8fbf8}
+    .badge-pill{display:inline-block;padding:4px 9px;border-radius:999px;background:#e7f3ea;color:#185c35;font-size:.75rem;font-weight:800}
+    .team-filter{display:flex;gap:8px;overflow:auto;padding-bottom:6px}
+    .team-filter button{white-space:nowrap}
+    .member-list{display:grid;gap:8px}
+    .member-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px;border:1px solid #e5e8e5;border-radius:12px;background:#fff}
+
+</style>
 </head>
 <body>
 <header>
@@ -221,10 +252,17 @@
         <div class="quick-actions">
           <button class="quick-action" onclick="showScreen('availability')"><b>✓ Availability</b><small>Respond for your next match</small></button>
           <button class="quick-action" onclick="showScreen('fixtures')"><b>📅 Fixtures</b><small>See all upcoming games</small></button>
+          <button class="quick-action" onclick="showScreen('ground')"><b>🏟️ Ground calendar</b><small>See everything happening today</small></button>
           <button class="quick-action" onclick="showScreen('team')"><b>🏏 Team sheet</b><small>View selected sides</small></button>
           <button class="quick-action" onclick="openProfileManager()"><b>👤 My profile</b><small>Update your club details</small></button>
         </div>
       </div>
+      
+      <div class="card full">
+        <div class="team-row"><h3>Today at the ground</h3><button class="secondary" onclick="showScreen('ground')">Open calendar</button></div>
+        <div id="todayGround" class="today-strip"></div>
+      </div>
+
       <div class="card full">
         <div class="team-row"><h3>Latest club notice</h3><button class="secondary" onclick="showScreen('club')">View all</button></div>
         <div id="latestAnnouncement"></div>
@@ -243,6 +281,58 @@
         <button onclick="openModal('fixtureModal')">+ Add</button>
       </div>
       <div class="fixture-toolbar"><div><label for="fixtureTeamFilter">Filter by team</label><select id="fixtureTeamFilter" onchange="renderFixtures()"><option value="All">All teams</option><option>1st XI</option><option>2nd XI</option><option>3rd XI</option><option>Midweek XI</option><option>Under 11</option><option>Girls Under 11</option><option>Under 12</option><option>Under 13</option><option>All Stars</option><option>Dynamos</option></select></div></div><div id="fixtureList" class="list"></div>
+    </div>
+  </section>
+
+
+  <section id="ground" class="screen">
+    <div class="section-title">
+      <div><h2>Ground calendar</h2><p>Matches, training, maintenance, meetings, functions and bookings in one place.</p></div>
+    </div>
+    <div class="card">
+      <div class="sync-panel">
+        <div class="team-row">
+          <div><strong>Play-Cricket fixture sync</strong><div class="meta">Imports all club teams once the site ID and API token are added securely in Netlify.</div></div>
+          <button onclick="syncPlayCricket()">Sync now</button>
+        </div>
+        <div id="playCricketStatus" class="sync-status">Waiting for Play-Cricket credentials.</div>
+      </div>
+      <div class="calendar-toolbar">
+        <div><label for="calendarFrom">From</label><input id="calendarFrom" type="date" onchange="renderGroundCalendar()"></div>
+        <div><label for="calendarType">Event type</label><select id="calendarType" onchange="renderGroundCalendar()"><option value="All">All events</option><option>Match</option><option>Training</option><option>Maintenance</option><option>Booking</option><option>Meeting</option><option>Social</option></select></div>
+        <button onclick="openModal('groundEventModal')">+ Add ground event</button>
+      </div>
+      <div id="groundCalendar"></div>
+    </div>
+  </section>
+
+
+  <section id="wholeclub" class="screen">
+    <div class="section-title">
+      <div><h2>Whole club</h2><p>Senior, women’s, junior and social cricket managed from one place.</p></div>
+    </div>
+    <div class="card">
+      <div class="admin-note"><strong>Access note:</strong> this version organises roles and permissions in the app interface. Secure email login and parent-linked junior accounts are the next database upgrade.</div>
+    </div>
+    <div class="card">
+      <h3>Club sections</h3>
+      <div id="clubSections" class="role-grid"></div>
+    </div>
+    <div class="card">
+      <div class="team-row"><h3>Members</h3><button onclick="openModal('memberModal')">+ Add member</button></div>
+      <div class="team-filter" id="memberTeamFilters"></div>
+      <div id="memberDirectory" class="member-list"></div>
+    </div>
+    <div class="card">
+      <h3>Ground resources</h3>
+      <div class="resource-grid">
+        <div class="resource-card"><strong>Main square</strong><div class="meta">Senior and principal fixtures</div></div>
+        <div class="resource-card"><strong>Junior square</strong><div class="meta">Junior fixtures and training</div></div>
+        <div class="resource-card"><strong>Nets</strong><div class="meta">Coaching and practice bookings</div></div>
+        <div class="resource-card"><strong>Pavilion</strong><div class="meta">Meetings, functions and hospitality</div></div>
+        <div class="resource-card"><strong>Bar</strong><div class="meta">Social events and match-day use</div></div>
+        <div class="resource-card"><strong>Outfield</strong><div class="meta">Training, events and maintenance</div></div>
+      </div>
     </div>
   </section>
 
@@ -326,16 +416,46 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 3.0</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 4.1 · Whole Club</div>
 </main>
 
 <nav>
   <button class="active" data-screen="home" onclick="showScreen('home',this)"><span>🏠</span>Home</button>
   <button data-screen="fixtures" onclick="showScreen('fixtures',this)"><span>📅</span>Fixtures</button>
+  <button data-screen="ground" onclick="showScreen('ground',this)"><span>🏟️</span>Ground</button>
+  <button data-screen="wholeclub" onclick="showScreen('wholeclub',this)"><span>👥</span>Club</button>
   <button data-screen="availability" onclick="showScreen('availability',this)"><span>✅</span>Availability</button>
   <button data-screen="team" onclick="showScreen('team',this)"><span>🏏</span>Team</button>
   <button data-screen="club" onclick="showScreen('club',this)"><span>📣</span>Club</button>
 </nav>
+
+
+
+<div id="memberModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add club member</h3><button class="close" onclick="closeModal('memberModal')">✕</button></div>
+    <label>Name</label><input id="mName" placeholder="Full name">
+    <label>Role</label><select id="mRole"><option>Player</option><option>Captain</option><option>Coach</option><option>Parent / guardian</option><option>Committee</option><option>Volunteer</option></select>
+    <label>Club section</label><select id="mSection"><option>Senior Men</option><option>Women & Girls</option><option>Sunday & Social</option><option>Juniors</option><option>All Stars & Dynamos</option><option>Committee & Volunteers</option></select>
+    <label>Team</label><input id="mTeam" placeholder="e.g. 1st XI, U13, Women’s XI">
+    <label>Email</label><input id="mEmail" type="email" placeholder="Optional">
+    <div class="button-row"><button onclick="addMember()">Save member</button></div>
+  </div>
+</div>
+
+<div id="groundEventModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add ground event</h3><button class="close" onclick="closeModal('groundEventModal')">✕</button></div>
+    <label>Event type</label><select id="gType"><option>Training</option><option>Maintenance</option><option>Booking</option><option>Meeting</option><option>Social</option></select>
+    <label>Title</label><input id="gTitle" placeholder="e.g. U13 training, pavilion booking">
+    <label>Starts</label><input id="gStart" type="datetime-local">
+    <label>Ends</label><input id="gEnd" type="datetime-local">
+    <label>Area / resource</label><select id="gResource"><option>Main square</option><option>Junior square</option><option>Nets</option><option>Outfield</option><option>Pavilion</option><option>Bar</option><option>Whole ground</option></select>
+    <label>Team / organiser</label><input id="gOwner" placeholder="Team, coach or contact">
+    <label>Notes</label><textarea id="gNotes" placeholder="Access, equipment, setup or contact details"></textarea>
+    <div class="button-row"><button onclick="addGroundEvent()">Save event</button></div>
+  </div>
+</div>
 
 <div id="fixtureModal" class="modal">
   <div class="modal-box">
@@ -442,6 +562,20 @@ const demoData = {
     {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Finedon Dolben CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true}
   ],
   training: [],
+  events: [
+    {id: crypto.randomUUID(), type:"Maintenance", title:"Ground preparation", start:"2026-08-07T17:00", end:"2026-08-07T19:00", resource:"Main square", owner:"Ground team", notes:"Pitch preparation for Saturday fixtures"},
+    {id: crypto.randomUUID(), type:"Meeting", title:"Committee meeting", start:"2026-08-11T19:30", end:"2026-08-11T21:00", resource:"Pavilion", owner:"Committee", notes:"Monthly committee meeting"}
+  ],
+  playCricket:{lastSync:null,siteIdConfigured:false,siteId:"1245"},
+  clubSections:[
+    {name:"Senior Men",teams:["1st XI","2nd XI","3rd XI","Midweek XI"]},
+    {name:"Women & Girls",teams:["Women’s XI","Girls teams"]},
+    {name:"Sunday & Social",teams:["Sunday XI","Friendly XI"]},
+    {name:"Juniors",teams:["U17","U15","U13","U11","U9"]},
+    {name:"All Stars & Dynamos",teams:["All Stars","Dynamos"]},
+    {name:"Committee & Volunteers",teams:["Committee","Ground team","Scorers","Coaches"]}
+  ],
+  members:[],
   announcements: [
     {id: crypto.randomUUID(), title:"Official fixtures imported", message:"Fixtures shown here were checked against Bold Dragoon CC's official Play-Cricket team pages on 14 July 2026. Festival start times remain TBC where Play-Cricket did not publish a time.", date:new Date().toISOString()}
   ],
@@ -451,6 +585,10 @@ const demoData = {
 };
 let data = load();
 data.trainingAvailability=data.trainingAvailability||{};
+data.events=data.events||[];
+data.playCricket=data.playCricket||{lastSync:null,siteIdConfigured:false,siteId:"1245"};
+data.clubSections=data.clubSections||[];
+data.members=data.members||[];
 data.announcements=(data.announcements||[]).map(a=>({...a,audience:a.audience||"Whole club",priority:a.priority||"normal"}));
 data.players=(data.players||[]).map(p=>({...p,role:p.role||"Player"}));
 
@@ -654,6 +792,97 @@ function saveTeamSelection(){
   };
   save(); renderPublishedTeamSheet(fid,data.selections[fid]); toast(sharedDatabaseConnected ? "Team selection shared with the club" : "Team selection saved on this device");
 }
+
+function asCalendarItems(){
+  const fixtureItems=(data.fixtures||[]).map(f=>({
+    id:"fixture-"+f.id,type:"Match",title:`${f.team} v ${f.opponent}`,start:f.date,
+    end:new Date(new Date(f.date).getTime()+4*60*60*1000).toISOString().slice(0,16),
+    resource:f.venue==="Home"?(f.ground||"Main square"):(f.ground||"Away"),owner:f.team,
+    notes:[f.competition,f.notes].filter(Boolean).join(" · "),fixtureId:f.id,home:f.venue==="Home"
+  })).filter(x=>x.home);
+  const trainingItems=(data.training||[]).map(t=>({
+    id:"training-"+t.id,type:"Training",title:t.team,start:t.date,
+    end:new Date(new Date(t.date).getTime()+2*60*60*1000).toISOString().slice(0,16),
+    resource:t.location||"Nets",owner:t.team,notes:t.plan||""
+  }));
+  return [...fixtureItems,...trainingItems,...(data.events||[])].sort((a,b)=>new Date(a.start)-new Date(b.start));
+}
+function eventClashes(item, all){
+  return all.some(other=>other.id!==item.id && other.resource===item.resource &&
+    new Date(item.start)<new Date(other.end) && new Date(item.end)>new Date(other.start));
+}
+function renderGroundCalendar(){
+  const fromValue=document.getElementById("calendarFrom")?.value;
+  const from=fromValue?new Date(fromValue+"T00:00"):new Date();
+  from.setHours(0,0,0,0);
+  const end=new Date(from);end.setDate(end.getDate()+60);
+  const type=document.getElementById("calendarType")?.value||"All";
+  const all=asCalendarItems();
+  const visible=all.filter(e=>new Date(e.start)>=from && new Date(e.start)<=end && (type==="All"||e.type===type));
+  const groups={};
+  visible.forEach(e=>{const key=new Date(e.start).toISOString().slice(0,10);(groups[key] ||= []).push(e)});
+  groundCalendar.innerHTML=Object.entries(groups).map(([day,items])=>{
+    const d=new Date(day+"T12:00");
+    return `<div class="calendar-day"><div class="calendar-day-title"><strong>${d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}</strong><span>${items.length} event${items.length===1?"":"s"}</span></div>
+      ${items.map(e=>{const clash=eventClashes(e,all);return `<div class="calendar-event ${clash?"clash":""}">
+        <span class="event-dot ${e.type}"></span><div><strong>${e.title}</strong><div class="meta">${e.type} · ${e.owner||"Club"}</div><div class="resource">${e.resource||"Ground"}${e.notes?" · "+e.notes:""}</div>${clash?'<span class="clash-badge">Possible clash</span>':""}</div>
+        <div class="time">${new Date(e.start).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div></div>`}).join("")}</div>`;
+  }).join("") || '<div class="empty-state"><div class="icon">🏟️</div><strong>No events in this period</strong><p>Add a ground event or sync fixtures from Play-Cricket.</p></div>';
+}
+function renderTodayGround(){
+  const today=new Date();today.setHours(0,0,0,0);const tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
+  const items=asCalendarItems().filter(e=>new Date(e.start)>=today&&new Date(e.start)<tomorrow);
+  todayGround.innerHTML=items.map(e=>`<div class="today-item"><div class="today-time">${new Date(e.start).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div><div><strong>${e.title}</strong><div class="meta">${e.type} · ${e.resource||"Ground"}</div></div></div>`).join("")||'<p class="empty">Nothing booked at the ground today.</p>';
+}
+function addGroundEvent(){
+  const title=gTitle.value.trim(),start=gStart.value,end=gEnd.value;
+  if(!title||!start||!end){alert("Please add a title, start and end time.");return}
+  if(new Date(end)<=new Date(start)){alert("The end time must be after the start time.");return}
+  data.events.push({id:crypto.randomUUID(),type:gType.value,title,start,end,resource:gResource.value,owner:gOwner.value.trim(),notes:gNotes.value.trim()});
+  closeModal("groundEventModal");save();toast("Ground event added");
+}
+async function syncPlayCricket(){
+  playCricketStatus.textContent="Syncing fixtures…";
+  try{
+    const season=new Date().getFullYear();
+    const response=await fetch(`/.netlify/functions/play-cricket-sync?season=${season}`,{cache:"no-store"});
+    const result=await response.json();
+    if(!response.ok) throw new Error(result.error||"Sync failed");
+    const imported=result.fixtures||[];
+    const existing=new Map((data.fixtures||[]).filter(f=>f.playCricketId).map(f=>[String(f.playCricketId),f]));
+    imported.forEach(f=>{
+      const old=existing.get(String(f.playCricketId));
+      if(old) Object.assign(old,f); else data.fixtures.push(f);
+    });
+    data.playCricket={lastSync:new Date().toISOString(),siteIdConfigured:true};
+    await save();renderAll();
+    playCricketStatus.textContent=`Last synced ${new Date().toLocaleString("en-GB")} · ${imported.length} fixtures received.`;
+    toast("Play-Cricket fixtures synced");
+  }catch(err){
+    playCricketStatus.textContent=err.message.includes("not configured")?"Add PLAY_CRICKET_SITE_ID and PLAY_CRICKET_API_TOKEN in Netlify first.":`Sync failed: ${err.message}`;
+  }
+}
+function updatePlayCricketStatus(){
+  const el=document.getElementById("playCricketStatus");if(!el)return;
+  el.textContent=data.playCricket?.lastSync?`Last synced ${new Date(data.playCricket.lastSync).toLocaleString("en-GB")}.`:`Club ID 1245 saved. Waiting for the Play-Cricket API token.`;
+}
+
+
+let activeMemberFilter="All";
+function renderWholeClub(){
+  clubSections.innerHTML=(data.clubSections||[]).map(s=>`<div class="role-card"><strong>${s.name}</strong><div class="meta">${(s.teams||[]).join(" · ")}</div></div>`).join("");
+  const teams=["All",...new Set((data.members||[]).map(m=>m.team).filter(Boolean))];
+  memberTeamFilters.innerHTML=teams.map(t=>`<button class="${t===activeMemberFilter?"active":""}" onclick="activeMemberFilter='${t.replaceAll("'","\\'")}';renderWholeClub()">${t}</button>`).join("");
+  const members=(data.members||[]).filter(m=>activeMemberFilter==="All"||m.team===activeMemberFilter);
+  memberDirectory.innerHTML=members.map(m=>`<div class="member-row"><div><strong>${m.name}</strong><div class="meta">${m.role} · ${m.section}${m.team?" · "+m.team:""}</div></div><span class="badge-pill">${m.team||"Club"}</span></div>`).join("")||'<p class="empty">No members added yet.</p>';
+}
+function addMember(){
+  const name=mName.value.trim();
+  if(!name){alert("Please add the member's name.");return}
+  data.members.push({id:crypto.randomUUID(),name,role:mRole.value,section:mSection.value,team:mTeam.value.trim(),email:mEmail.value.trim()});
+  closeModal("memberModal");save();toast("Member added");
+}
+
 function renderClub(){
   document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
     <div class="item"><strong>${t.team}</strong><small>${fmtDate(t.date)}</small>
@@ -693,7 +922,8 @@ function removeTraining(id){if(confirm("Delete this session?")){data.training=da
 function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
 function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
 function resetDemo(){if(confirm("Reset everything to the original demo data? This will update the shared club database.")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
-function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();updateProfileUI()}
+function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTodayGround();renderGroundCalendar();updatePlayCricketStatus();updateProfileUI()}
+document.getElementById("calendarFrom").value=new Date().toISOString().slice(0,10);
 renderAll();
 connectSharedDatabase();
 </script>

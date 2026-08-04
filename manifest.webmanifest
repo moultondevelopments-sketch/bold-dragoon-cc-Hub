@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#f5f2e8",
   "theme_color": "#183b2b",
-  "description": "Fixtures, availability, team selection, training and club notices for Bold Dragoon Cricket Club.",
+  "description": "Whole-club fixtures, availability, ground calendar and communications.",
   "icons": [
     {
       "src": "icon-192.png",
