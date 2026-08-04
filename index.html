@@ -953,7 +953,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 12.0 · Complete Club App</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 12.1 · Supabase Ready</div>
 
 
   <section id="operations" class="screen">
@@ -1263,7 +1263,7 @@
 <div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const KEY = "boldDragoonCCDataV12";
+const KEY = "boldDragoonCCDataV12_1";
 const PROFILE_KEY = "boldDragoonCCCurrentPlayer";
 let currentPlayerId = localStorage.getItem(PROFILE_KEY) || "";
 let supabaseClient = null;
@@ -1350,7 +1350,7 @@ async function save(){
 
 async function connectSharedDatabase(){
   const connectionTimer=setTimeout(()=>{
-    if(!sharedDatabaseConnected)setStorageStatus("Local mode — secure club database setup is still pending.",false);
+    if(!sharedDatabaseConnected)setStorageStatus("Local mode — ready for Supabase setup.",false);
   },7000);
   try{
     const response=await fetch("/.netlify/functions/supabase-config", {cache:"no-store"});
@@ -2026,27 +2026,33 @@ function weatherDescription(code){
 }
 
 function renderLiveWeather(){
-  if(!liveWeather?.current)return;
+  const content=document.getElementById("liveWeatherContent");
+  const alertBox=document.getElementById("weatherAlert");
+  if(!content||!liveWeather?.current)return;
+
   const c=liveWeather.current;
   const [description,icon]=weatherDescription(c.weather_code);
   const rainChance=liveWeather.hourly?.precipitation_probability?.[0]??0;
-  liveWeatherContent.innerHTML=`<div class="weather-main-icon">${icon}</div>
-    <div><strong>${description}</strong><div class="meta">${liveWeather.location}</div>
+
+  content.innerHTML=`<div class="weather-main-icon">${icon}</div>
+    <div><strong>${description}</strong><div class="meta">${escapeMessage(liveWeather.location||"Bold Dragoon CC, Rushmere Road")}</div>
       <div class="weather-details">
         <span class="weather-detail">Feels ${Math.round(c.apparent_temperature)}°C</span>
         <span class="weather-detail">Rain ${Math.round(c.precipitation||0)} mm</span>
         <span class="weather-detail">Wind ${Math.round(c.wind_speed_10m)} km/h</span>
         <span class="weather-detail">Gusts ${Math.round(c.wind_gusts_10m)} km/h</span>
       </div>
-      <div class="weather-updated">Updated ${new Date(liveWeather.fetchedAt).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div>
+      <div class="weather-updated">Updated ${new Date(liveWeather.fetchedAt||Date.now()).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</div>
     </div>
     <div class="weather-temp">${Math.round(c.temperature_2m)}°</div>`;
+
   const todayRain=liveWeather.daily?.precipitation_probability_max?.[0]??rainChance;
   let alertText="";
   if(todayRain>=70)alertText="High chance of rain today — check covers, pitch and training arrangements.";
   else if((c.wind_gusts_10m||0)>=50)alertText="Strong gusts expected — review nets, gazebos and loose equipment.";
   else if((c.precipitation||0)>0)alertText="Rain is currently being recorded at the ground.";
-  weatherAlert.innerHTML=alertText?`<div class="weather-alert">⚠️ ${alertText}</div>`:"";
+
+  if(alertBox) alertBox.innerHTML=alertText?`<div class="weather-alert">⚠️ ${alertText}</div>`:"";
 }
 
 
@@ -2431,11 +2437,25 @@ function renderAllSafe(){
   ].forEach(([name,fn])=>safeRun(name,fn));
 }
 
+
+function startWeatherWatchdog(){
+  setTimeout(()=>{
+    const content=document.getElementById("liveWeatherContent");
+    if(content && /Loading (live|ground) weather/i.test(content.textContent)){
+      content.innerHTML=`<div class="weather-main-icon">⚠️</div>
+        <div><strong>Weather has not loaded</strong>
+        <div class="meta">Check that the complete netlify/functions folder was uploaded.</div>
+        <button class="secondary weather-refresh" onclick="loadLiveWeather()">Try again</button></div>`;
+    }
+  },12000);
+}
+
 function startIndependentServices(){
   // Each service starts separately, even if another renderer fails.
   Promise.resolve().then(()=>connectSharedDatabase()).catch(e=>reportAppError("database",e));
   Promise.resolve().then(()=>initSecureAccount()).catch(e=>reportAppError("account",e));
   Promise.resolve().then(()=>loadLiveWeather()).catch(e=>reportAppError("weather",e));
+  startWeatherWatchdog();
 }
 
 function renderAllLegacy(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMessages();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();renderPremiumHome();renderAppExperience();updatePlayCricketStatus();updateProfileUI()}

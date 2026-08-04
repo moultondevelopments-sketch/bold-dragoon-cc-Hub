@@ -1,0 +1,27 @@
+BOLD DRAGOON CC — SUPABASE NEXT STEPS
+
+Do these only after Version 12.1 is live and the app buttons work.
+
+1. Open your Supabase project.
+2. Open SQL Editor.
+3. Click New query.
+4. Open SUPABASE_SETUP.sql from this folder.
+5. Copy all of it into Supabase and click Run.
+6. Confirm it says Success.
+7. Open a second New query.
+8. Open SUPABASE_SECURE_AUTH.sql.
+9. Copy all of it into Supabase and click Run.
+10. Go to Authentication > Providers and enable Email.
+11. Open the app and register your own account.
+12. In SQL Editor run:
+
+update public.club_profiles
+set approved = true, role = 'committee'
+where email = 'REPLACE_WITH_YOUR_EMAIL';
+
+13. Refresh the app and sign in.
+
+Do not put the Supabase service-role key in GitHub or Netlify.
+The existing Netlify environment variables should only use:
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_ANON_KEY
