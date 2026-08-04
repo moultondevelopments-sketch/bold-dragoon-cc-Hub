@@ -1,16 +1,21 @@
-# Bold Dragoon CC Hub — Version 10.1
+# Bold Dragoon CC Hub — Version 10.2
 
-This emergency fix resolves the issue where none of the navigation buttons worked.
+This release was fully checked after reports that old fixtures were still showing.
 
 Fixed:
-- Duplicate JavaScript variable that stopped the entire script loading
-- Supabase configuration key mismatch
-- Safer screen navigation
-- New read-only guest mode so the app can be tested before secure-auth setup
-- Service-worker cache version increased so iPhones load the repaired code
+- Removed every hard-coded demonstration fixture
+- Added a migration that removes old bundled fixtures from Supabase shared state
+- Preserves manually-added fixtures and Play-Cricket-synced fixtures
+- Removes duplicate fixtures
+- Uses a new local-storage and service-worker cache version
+- Improved empty-fixture wording
 
-After uploading:
-1. Wait for Netlify to publish.
-2. Open the app in Safari and refresh.
-3. If installed on the Home Screen, close it completely and reopen it.
-4. If the old broken version remains, remove the Home Screen app and add it again from Safari.
+Automated checks passed:
+- JavaScript syntax
+- Every clickable button has a matching function
+- Required screens exist
+- No duplicate HTML IDs
+- No old bundled opponent names remain
+
+Until the Play-Cricket API token arrives, the fixture page will show only
+fixtures added manually. Once the token is added, Sync now will populate live fixtures.

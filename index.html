@@ -871,7 +871,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 10.1 · Navigation Fix</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 10.2 · Verified Fixtures</div>
 
 
   <section id="operations" class="screen">
@@ -1146,91 +1146,14 @@
 <div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const KEY = "boldDragoonCCDataV6";
+const KEY = "boldDragoonCCDataV10_2";
 const PROFILE_KEY = "boldDragoonCCCurrentPlayer";
 let currentPlayerId = localStorage.getItem(PROFILE_KEY) || "";
 let supabaseClient = null;
 let sharedDatabaseConnected = false;
 let applyingRemoteUpdate = false;
 const demoData = {
-  fixtures: [
-    {id: crypto.randomUUID(), team:"1st XI", opponent:"Bowden CC, Leics - 1st XI", date:"2026-07-18T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Three", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Mears Ashby CC - 2nd XI", date:"2026-07-18T12:00", venue:"Away", ground:"Mears Ashby Playing Field", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"1st XI", opponent:"Oundle Town CC - Saturday 2nd XI", date:"2026-07-25T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Three", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Dunchurch & Bilton CC - 1st XI", date:"2026-07-25T12:00", venue:"Away", ground:"Dunchurch Sportsfield", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Sharnbrook & Bromham CC - 2nd XI", date:"2026-08-01T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"1st XI", opponent:"Great Houghton CC - 1st XI", date:"2026-08-08T12:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"NCL Division Three", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"2nd XI", opponent:"Horton House CC - 3rd XI", date:"2026-08-08T12:00", venue:"Away", ground:"Bozeat Playing Fields", competition:"NCL Division Ten", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Under 11", opponent:"Old Northamptonians CC - Under 11", date:"2026-07-19T10:00", venue:"Away", ground:"Old Northamptonians Sports Ground", competition:"U11 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Under 11", opponent:"Barby CC, Northants - Under 11", date:"2026-07-26T10:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"U11 Summer League - North", notes:"Home fixture shown on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Under 11", opponent:"Brixworth CC - Under 11", date:"2026-08-02T10:00", venue:"Away", ground:"Dallas Burston Grounds", competition:"U11 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Under 11", opponent:"Overstone Park CC - Under 11", date:"2026-08-09T10:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"U11 Summer League - North", notes:"Home fixture shown on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Under 13", opponent:"Old Northamptonians CC - Under 13", date:"2026-07-27T18:00", venue:"Away", ground:"Old Northamptonians Sports Ground", competition:"U13 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Under 13", opponent:"Barby CC, Northants - Under 13", date:"2026-08-03T18:00", venue:"Home", ground:"Bold Dragoon Cricket Club Ground", competition:"U13 Summer League - North", notes:"Home fixture shown on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Under 13", opponent:"Brixworth CC - Under 13", date:"2026-08-10T18:00", venue:"Away", ground:"Dallas Burston Grounds", competition:"U13 Summer League - North", notes:"Confirmed on official Play-Cricket team page"},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Barby CC, Northants - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Brixworth CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Earls Barton CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Northampton Saints CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Old Northamptonians CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Rushden and Higham Town CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Finedon Dolben CC - Girls Under 11", date:"2026-07-19T00:00", venue:"Festival", ground:"Barby Cricket Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Barby CC, Northants - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Brixworth CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Earls Barton CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Northampton Saints CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Old Northamptonians CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Rushden and Higham Town CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Finedon Dolben CC - Girls Under 11", date:"2026-08-02T00:00", venue:"Festival", ground:"Old Northamptonians Sports Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Barby CC, Northants - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Brixworth CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Earls Barton CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Northampton Saints CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Old Northamptonians CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Rushden and Higham Town CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true},
-    {id: crypto.randomUUID(), team:"Girls Under 11", opponent:"Finedon Dolben CC - Girls Under 11", date:"2026-08-09T00:00", venue:"Festival", ground:"Bold Dragoon Cricket Club Ground", competition:"Girls Under 11 festival", notes:"Fixture listed on the official Play-Cricket team page; start time not published", timeTbc:true}
-  ],
-  training: [],
-  events: [
-    {id: crypto.randomUUID(), type:"Maintenance", title:"Ground preparation", start:"2026-08-07T17:00", end:"2026-08-07T19:00", resource:"Main square", owner:"Ground team", notes:"Pitch preparation for Saturday fixtures"},
-    {id: crypto.randomUUID(), type:"Meeting", title:"Committee meeting", start:"2026-08-11T19:30", end:"2026-08-11T21:00", resource:"Pavilion", owner:"Committee", notes:"Monthly committee meeting"}
-  ],
-  playCricket:{lastSync:null,siteIdConfigured:false,siteId:"1245"},
-  clubSections:[
-    {name:"Senior Men",teams:["1st XI","2nd XI","3rd XI","Midweek XI"]},
-    {name:"Women & Girls",teams:["Women’s XI","Girls teams"]},
-    {name:"Sunday & Social",teams:["Sunday XI","Friendly XI"]},
-    {name:"Juniors",teams:["U17","U15","U13","U11","U9"]},
-    {name:"All Stars & Dynamos",teams:["All Stars","Dynamos"]},
-    {name:"Committee & Volunteers",teams:["Committee","Ground team","Scorers","Coaches"]}
-  ],
-  members:[],
-  groundStatus:"Open",
-  messageChannels:[
-    {id:"whole-club",name:"Whole club",audience:"All members",icon:"📣"},
-    {id:"senior-cricket",name:"Senior cricket",audience:"Senior players, captains and coaches",icon:"🏏"},
-    {id:"junior-cricket",name:"Junior cricket",audience:"Junior players, parents and coaches",icon:"🧒"},
-    {id:"parents",name:"Parents & guardians",audience:"Parents and guardians",icon:"👨‍👩‍👧"},
-    {id:"committee",name:"Committee",audience:"Committee members",icon:"📋"},
-    {id:"ground-team",name:"Ground team",audience:"Ground staff and volunteers",icon:"🚜"}
-  ],
-  messages:[
-    {id:crypto.randomUUID(),channelId:"whole-club",author:"Bold Dragoon CC",authorId:"club-admin",text:"Welcome to the Bold Dragoon message centre.",createdAt:new Date().toISOString(),pinned:true}
-  ],
-  messageRead:{},
-  contacts:[
-    {id:crypto.randomUUID(),name:"Club Secretary",role:"Secretary",email:"bolddragooncc1987@gmail.com",phone:""}
-  ],
-  documents:[],
-  sponsors:[],
-  volunteerRota:[],
-  membershipRecords:[],
-  news:[
-    {id:crypto.randomUUID(),title:"Official fixtures imported",audience:"Whole club",priority:"Normal",message:"Fixtures shown in the app were checked against Bold Dragoon CC's official Play-Cricket team pages.",createdAt:new Date().toISOString()}
-  ],
-  announcements: [
-    {id: crypto.randomUUID(), title:"Official fixtures imported", message:"Fixtures shown here were checked against Bold Dragoon CC's official Play-Cricket team pages on 14 July 2026. Festival start times remain TBC where Play-Cricket did not publish a time.", date:new Date().toISOString()}
-  ],
+  fixtures: [],
   players: [],
   availability:{},
   selections:{}
@@ -1254,9 +1177,33 @@ data.membershipRecords=data.membershipRecords||[];
 data.announcements=(data.announcements||[]).map(a=>({...a,audience:a.audience||"Whole club",priority:a.priority||"normal"}));
 data.players=(data.players||[]).map(p=>({...p,role:p.role||"Player"}));
 
+
+const DATA_VERSION = 102;
+
+function migrateClubData(input){
+  const migrated = input && typeof input==="object" ? input : structuredClone(demoData);
+  const oldBundledNote = /Confirmed on official Play-Cricket team page|Home fixture shown on official Play-Cricket team page/i;
+
+  if((migrated.dataVersion||0) < DATA_VERSION){
+    migrated.fixtures = (migrated.fixtures||[]).filter(f=>{
+      if(f.playCricketId) return true;
+      if(f.source==="manual") return true;
+      return !oldBundledNote.test(String(f.notes||""));
+    });
+    migrated.dataVersion = DATA_VERSION;
+  }
+
+  migrated.fixtures = (migrated.fixtures||[]).filter((f,index,all)=>{
+    const key=[f.playCricketId||"",f.team||"",f.opponent||"",f.date||""].join("|");
+    return all.findIndex(x=>[x.playCricketId||"",x.team||"",x.opponent||"",x.date||""].join("|")===key)===index;
+  });
+
+  return migrated;
+}
+
 function load(){
   const saved = localStorage.getItem(KEY);
-  return saved ? JSON.parse(saved) : structuredClone(demoData);
+  return migrateClubData(saved ? JSON.parse(saved) : structuredClone(demoData));
 }
 
 function setStorageStatus(message, ok=false){
@@ -1295,9 +1242,16 @@ async function connectSharedDatabase(){
     if(error) throw error;
 
     if(row && row.data){
-      data=row.data;
+      const originalVersion=row.data.dataVersion||0;
+      data=migrateClubData(row.data);
       localStorage.setItem(KEY, JSON.stringify(data));
       renderAll();
+      if(originalVersion<DATA_VERSION){
+        const {error:migrationError}=await supabaseClient.from("club_state").upsert({
+          id:"main",data,updated_at:new Date().toISOString()
+        });
+        if(migrationError) console.warn("Fixture migration could not be saved:",migrationError);
+      }
     } else {
       const {error:seedError}=await supabaseClient.from("club_state").insert({id:"main",data});
       if(seedError) throw seedError;
@@ -2002,7 +1956,7 @@ function renderProfessionalFixtures(){
   if(fixtureView==="results") list=list.filter(f=>new Date(f.date)<now).reverse();
 
   fixturesList.innerHTML=list.map(professionalFixtureCard).join("") ||
-    '<div class="empty-state"><strong>No fixtures in this view</strong><p>They will appear here after adding or syncing fixtures.</p></div>';
+    '<div class="empty-state"><strong>No current fixtures available</strong><p>Fixtures will appear after they are added manually or synced from Play-Cricket.</p></div>';
 }
 
 function renderProfessionalTeams(){
