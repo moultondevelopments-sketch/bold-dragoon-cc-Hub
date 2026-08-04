@@ -703,7 +703,7 @@
       <div class="card weather-card">
       <div id="liveWeatherContent" class="weather-live">
         <div class="weather-main-icon">⛅</div>
-        <div><strong>Loading ground weather…</strong><div class="meta">Rushmere Road, Northampton</div></div>
+        <div><strong>Weather integration coming soon.<br><span class="meta">Live weather temporarily disabled.</span></div></div>
       </div>
       <div id="weatherAlert"></div>
     </div>
@@ -2454,8 +2454,8 @@ function startIndependentServices(){
   // Each service starts separately, even if another renderer fails.
   Promise.resolve().then(()=>connectSharedDatabase()).catch(e=>reportAppError("database",e));
   Promise.resolve().then(()=>initSecureAccount()).catch(e=>reportAppError("account",e));
-  Promise.resolve().then(()=>loadLiveWeather()).catch(e=>reportAppError("weather",e));
-  startWeatherWatchdog();
+  // Weather temporarily disabled
+  
 }
 
 function renderAllLegacy(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMessages();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();renderPremiumHome();renderAppExperience();updatePlayCricketStatus();updateProfileUI()}
