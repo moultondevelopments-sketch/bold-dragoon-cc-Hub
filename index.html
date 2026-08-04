@@ -537,6 +537,21 @@
     .permission-note{padding:10px 12px;border-radius:12px;background:#eef4f0;color:#31533f;font-size:.78rem;margin-top:10px}
     .hidden-by-role{display:none!important}
 
+
+    .bottom-nav{
+      padding-bottom:max(8px,env(safe-area-inset-bottom));
+    }
+    .bottom-nav button{
+      min-width:0!important;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:2px;font-size:.72rem;font-weight:850;line-height:1.05;
+    }
+    .bottom-nav button span{display:block;line-height:1}
+    @media(max-width:760px){
+      .bottom-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;overflow:visible!important}
+      .bottom-nav button{min-width:0!important}
+    }
+
 </style>
 </head>
 <body>
@@ -871,7 +886,7 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 10.2 · Verified Fixtures</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 10.3 · Polished Navigation & Weather</div>
 
 
   <section id="operations" class="screen">
@@ -973,14 +988,12 @@
 
 </main>
 
-<nav>
+<nav class="bottom-nav">
   <button class="active" data-screen="home" onclick="showScreen('home',this)"><span>🏠</span>Home</button>
-  <button data-screen="fixtures" onclick="showScreen('fixtures',this)"><span>📅</span>Fixtures</button>
-  <button data-screen="ground" onclick="showScreen('ground',this)"><span>🏟️</span>Ground</button>
-  <button data-screen="wholeclub" onclick="showScreen('wholeclub',this)"><span>👥</span>Club</button>
-  <button data-screen="availability" onclick="showScreen('availability',this)"><span>✅</span>Availability</button>
-  <button data-screen="team" onclick="showScreen('team',this)"><span>🏏</span>Team</button>
-  <button data-screen="club" onclick="showScreen('club',this)"><span>📣</span>Club</button>
+  <button data-screen="ground" onclick="showScreen('ground',this)"><span>📅</span>Calendar</button>
+  <button data-screen="fixtures" onclick="showScreen('fixtures',this)"><span>🏏</span>Matches</button>
+  <button data-screen="teams" onclick="showScreen('teams',this)"><span>👥</span>Teams</button>
+  <button data-screen="more" onclick="showScreen('more',this)"><span>☰</span>More</button>
 </nav>
 
 
@@ -1231,6 +1244,9 @@ async function save(){
 }
 
 async function connectSharedDatabase(){
+  const connectionTimer=setTimeout(()=>{
+    if(!sharedDatabaseConnected)setStorageStatus("Local mode — secure club database setup is still pending.",false);
+  },7000);
   try{
     const response=await fetch("/.netlify/functions/supabase-config", {cache:"no-store"});
     if(!response.ok) throw new Error("Configuration could not be loaded");
@@ -1257,6 +1273,7 @@ async function connectSharedDatabase(){
       if(seedError) throw seedError;
     }
 
+    clearTimeout(connectionTimer);
     sharedDatabaseConnected=true;
     setStorageStatus("Connected — club information is shared across devices.", true);
 
@@ -1264,13 +1281,14 @@ async function connectSharedDatabase(){
       .on("postgres_changes", {event:"UPDATE",schema:"public",table:"club_state",filter:"id=eq.main"}, payload=>{
         if(!payload.new?.data) return;
         applyingRemoteUpdate=true;
-        data=payload.new.data;
+        data=migrateClubData(payload.new.data);
         localStorage.setItem(KEY, JSON.stringify(data));
         renderAll();
         applyingRemoteUpdate=false;
       })
       .subscribe();
   }catch(error){
+    clearTimeout(connectionTimer);
     console.error(error);
     setStorageStatus("Not connected. Complete the Supabase table setup; changes remain saved on this device.");
   }
@@ -1834,17 +1852,49 @@ function secureMessagingAllowed(channelId){
   return channelId==="junior-cricket"&&profile.junior_messaging_consent===true;
 }
 
+
+async function fetchWeatherDirectly(){
+  const params=new URLSearchParams({
+    latitude:"52.2369",
+    longitude:"-0.8790",
+    current:"temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,weather_code,cloud_cover,wind_speed_10m,wind_gusts_10m",
+    hourly:"precipitation_probability,precipitation,rain,weather_code,temperature_2m,wind_speed_10m,wind_gusts_10m",
+    daily:"weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max",
+    timezone:"Europe/London",
+    forecast_days:"7"
+  });
+  const response=await fetch(`https://api.open-meteo.com/v1/forecast?${params}`,{cache:"no-store"});
+  if(!response.ok)throw new Error(`Weather provider returned ${response.status}`);
+  const forecast=await response.json();
+  return {
+    location:"Bold Dragoon CC, Rushmere Road",
+    fetchedAt:new Date().toISOString(),
+    ...forecast
+  };
+}
+
 async function loadLiveWeather(){
+  liveWeatherContent.innerHTML='<div class="weather-main-icon">⛅</div><div><strong>Loading live weather…</strong><div class="meta">Bold Dragoon CC, Rushmere Road</div></div>';
   try{
-    const response=await fetch("/.netlify/functions/ground-weather",{cache:"no-store"});
-    const payload=await response.json();
-    if(!response.ok)throw new Error(payload.error||"Weather unavailable");
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),6000);
+    let payload;
+    try{
+      const response=await fetch("/.netlify/functions/ground-weather",{cache:"no-store",signal:controller.signal});
+      clearTimeout(timer);
+      payload=await response.json();
+      if(!response.ok)throw new Error(payload.error||"Weather function unavailable");
+    }catch(functionError){
+      clearTimeout(timer);
+      payload=await fetchWeatherDirectly();
+    }
     liveWeather=payload;
     renderLiveWeather();
   }catch(err){
-    liveWeatherContent.innerHTML=`<div class="weather-main-icon">⚠️</div><div><strong>Weather unavailable</strong><div class="meta">${escapeMessage(err.message)}</div></div>`;
+    liveWeatherContent.innerHTML=`<div class="weather-main-icon">⚠️</div><div><strong>Weather unavailable</strong><div class="meta">${escapeMessage(err.message)}</div><button class="secondary" style="margin-top:8px" onclick="loadLiveWeather()">Try again</button></div>`;
   }
 }
+
 
 function weatherDescription(code){
   if(code===0)return["Clear","☀️"];
