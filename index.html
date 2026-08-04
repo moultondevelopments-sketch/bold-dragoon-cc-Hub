@@ -203,6 +203,54 @@
     .member-list{display:grid;gap:8px}
     .member-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px;border:1px solid #e5e8e5;border-radius:12px;background:#fff}
 
+
+    .hero-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:16px}
+    .hero-card{background:linear-gradient(135deg,#174f35,#0f3928);color:white;border-radius:20px;padding:20px;box-shadow:0 16px 34px rgba(16,61,42,.16)}
+    .hero-card h2{margin:0 0 6px;font-size:1.9rem}
+    .hero-card p{color:#dcebe3;margin:0 0 16px}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .hero-actions button{background:white;color:#174f35}
+    .metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .metric{padding:14px;border-radius:16px;background:#f6faf7;border:1px solid #e0e9e3}
+    .metric strong{display:block;font-size:1.45rem;color:#174f35}
+    .metric span{font-size:.78rem;color:#68756c}
+    .section-tabs{display:flex;gap:8px;overflow:auto;padding-bottom:6px}
+    .section-tabs button{white-space:nowrap}
+    .section-tabs button.active{background:#174f35;color:white}
+    .team-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .team-card{border:1px solid #e0e5e1;border-radius:16px;padding:15px;background:#fff}
+    .team-card h4{margin:0 0 6px}
+    .team-card .team-meta{font-size:.82rem;color:#6a756d;margin-bottom:10px}
+    .status-open{background:#e6f4ea;color:#1d6a3d}.status-closed{background:#fdeaea;color:#942c2c}
+    .status-pill{display:inline-block;border-radius:999px;padding:5px 9px;font-weight:800;font-size:.76rem}
+    .news-grid{display:grid;gap:10px}
+    .news-card{border:1px solid #e1e5e2;border-radius:15px;padding:14px;background:white}
+    .news-card .news-head{display:flex;justify-content:space-between;gap:10px}
+    .news-card .audience{font-size:.72rem;font-weight:800;border-radius:999px;padding:4px 8px;background:#eef3ef;color:#355343}
+    .more-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+    .more-tile{border:1px solid #e0e5e1;border-radius:16px;padding:15px;background:white;min-height:92px}
+    .more-tile b{display:block;margin-bottom:5px}
+    .calendar-view-switch{display:flex;gap:8px;margin-bottom:12px}
+    .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .month-head{text-align:center;font-size:.75rem;color:#68756c;padding:5px}
+    .month-day{min-height:85px;border:1px solid #e3e7e4;border-radius:10px;padding:7px;background:white}
+    .month-day.muted{opacity:.42}
+    .month-date{font-weight:800;font-size:.78rem}
+    .month-event{margin-top:5px;padding:4px 6px;border-radius:7px;background:#edf4ef;font-size:.67rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .month-event.Match{background:#e3f3e8}.month-event.Training{background:#e5eef9}.month-event.Maintenance{background:#fff0dd}.month-event.Booking{background:#f0e6f8}
+    .weather-card{display:flex;gap:14px;align-items:center}
+    .weather-icon{font-size:2.2rem}
+    .admin-toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    .bottom-nav{grid-template-columns:repeat(7,minmax(58px,1fr))}
+    @media(max-width:760px){
+      .hero-grid{grid-template-columns:1fr}
+      .hero-card h2{font-size:1.55rem}
+      .month-day{min-height:68px;padding:5px}
+      .month-event{font-size:.6rem}
+      .bottom-nav{overflow-x:auto;display:flex}
+      .bottom-nav button{min-width:72px}
+    }
+
 </style>
 </head>
 <body>
@@ -230,6 +278,28 @@
 
 <main>
   <section id="home" class="screen active">
+    <div class="hero-grid">
+      <div class="hero-card">
+        <h2 id="heroGreeting">Welcome to Bold Dragoon CC</h2>
+        <p>Everything happening across the club, ground and teams in one place.</p>
+        <div class="hero-actions">
+          <button onclick="showScreen('ground')">Open calendar</button>
+          <button onclick="showScreen('availability')">Set availability</button>
+          <button onclick="showScreen('teams')">View teams</button>
+        </div>
+      </div>
+      <div class="card weather-card">
+        <div class="weather-icon">⛅</div>
+        <div><strong>Match-day weather</strong><div class="meta">Weather will appear here when live weather is connected.</div><span class="status-pill status-open" id="groundStatusPill">Ground open</span></div>
+      </div>
+    </div>
+    <div class="metric-grid">
+      <div class="metric"><strong id="metricFixtures">0</strong><span>Upcoming fixtures</span></div>
+      <div class="metric"><strong id="metricToday">0</strong><span>Events today</span></div>
+      <div class="metric"><strong id="metricMembers">0</strong><span>Club members</span></div>
+      <div class="metric"><strong id="metricResponses">0</strong><span>Availability responses</span></div>
+    </div>
+
     <div class="hero">
       <div class="eyebrow">Club Hub</div>
       <h2 id="welcome">Welcome to Bold Dragoon CC</h2>
@@ -302,10 +372,35 @@
         <div><label for="calendarType">Event type</label><select id="calendarType" onchange="renderGroundCalendar()"><option value="All">All events</option><option>Match</option><option>Training</option><option>Maintenance</option><option>Booking</option><option>Meeting</option><option>Social</option></select></div>
         <button onclick="openModal('groundEventModal')">+ Add ground event</button>
       </div>
-      <div id="groundCalendar"></div>
+      
+      <div class="calendar-view-switch">
+        <button id="calendarListBtn" class="active" onclick="calendarView='list';renderGroundCalendar()">List</button>
+        <button id="calendarMonthBtn" onclick="calendarView='month';renderGroundCalendar()">Month</button>
+      </div>
+<div id="groundCalendar"></div>
     </div>
   </section>
 
+
+
+  <section id="teams" class="screen">
+    <div class="section-title">
+      <div><h2>Teams</h2><p>Fixtures, squad information and availability for every club section.</p></div>
+    </div>
+    <div class="card">
+      <div id="teamSectionTabs" class="section-tabs"></div>
+      <div id="teamCards" class="team-card-grid"></div>
+    </div>
+  </section>
+
+
+  <section id="news" class="screen">
+    <div class="section-title">
+      <div><h2>Club news</h2><p>Announcements, match updates, events and important notices.</p></div>
+      <button onclick="openModal('newsModal')">+ Add notice</button>
+    </div>
+    <div class="card"><div id="newsFeed" class="news-grid"></div></div>
+  </section>
 
   <section id="wholeclub" class="screen">
     <div class="section-title">
@@ -416,7 +511,22 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 4.1 · Whole Club</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 5.0 · Club Management</div>
+
+  <section id="more" class="screen">
+    <div class="section-title"><div><h2>More</h2><p>Club information, documents, contacts and administration.</p></div></div>
+    <div class="more-grid">
+      <button class="more-tile" onclick="showScreen('wholeclub')"><b>👥 Members</b><span class="meta">Directory, roles and club sections</span></button>
+      <button class="more-tile" onclick="showScreen('club')"><b>📣 Club centre</b><span class="meta">Notices, training and admin tools</span></button>
+      <div class="more-tile"><b>📄 Documents</b><span class="meta">Policies, membership and safeguarding</span></div>
+      <div class="more-tile"><b>🤝 Sponsors</b><span class="meta">Club partners and supporters</span></div>
+      <div class="more-tile"><b>🛍️ Club shop</b><span class="meta">Kit and merchandise</span></div>
+      <div class="more-tile"><b>☎️ Contacts</b><span class="meta">Committee, captains and coaches</span></div>
+      <div class="more-tile"><b>🏆 Honours</b><span class="meta">Club history and achievements</span></div>
+      <div class="more-tile"><b>🔔 Notifications</b><span class="meta">Match, training and news alerts</span></div>
+    </div>
+  </section>
+
 </main>
 
 <nav>
@@ -430,6 +540,18 @@
 </nav>
 
 
+
+
+<div id="newsModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add club notice</h3><button class="close" onclick="closeModal('newsModal')">✕</button></div>
+    <label>Title</label><input id="nTitle" placeholder="Notice title">
+    <label>Audience</label><select id="nAudience"><option>Whole club</option><option>Senior teams</option><option>Women & Girls</option><option>Juniors</option><option>Parents</option><option>Committee</option></select>
+    <label>Priority</label><select id="nPriority"><option>Normal</option><option>Important</option><option>Urgent</option></select>
+    <label>Message</label><textarea id="nMessage" placeholder="Write the club update"></textarea>
+    <div class="button-row"><button onclick="addNewsItem()">Publish notice</button></div>
+  </div>
+</div>
 
 <div id="memberModal" class="modal">
   <div class="modal-box">
@@ -576,6 +698,10 @@ const demoData = {
     {name:"Committee & Volunteers",teams:["Committee","Ground team","Scorers","Coaches"]}
   ],
   members:[],
+  groundStatus:"Open",
+  news:[
+    {id:crypto.randomUUID(),title:"Official fixtures imported",audience:"Whole club",priority:"Normal",message:"Fixtures shown in the app were checked against Bold Dragoon CC's official Play-Cricket team pages.",createdAt:new Date().toISOString()}
+  ],
   announcements: [
     {id: crypto.randomUUID(), title:"Official fixtures imported", message:"Fixtures shown here were checked against Bold Dragoon CC's official Play-Cricket team pages on 14 July 2026. Festival start times remain TBC where Play-Cricket did not publish a time.", date:new Date().toISOString()}
   ],
@@ -589,6 +715,8 @@ data.events=data.events||[];
 data.playCricket=data.playCricket||{lastSync:null,siteIdConfigured:false,siteId:"1245"};
 data.clubSections=data.clubSections||[];
 data.members=data.members||[];
+data.groundStatus=data.groundStatus||"Open";
+data.news=data.news||[];
 data.announcements=(data.announcements||[]).map(a=>({...a,audience:a.audience||"Whole club",priority:a.priority||"normal"}));
 data.players=(data.players||[]).map(p=>({...p,role:p.role||"Player"}));
 
@@ -819,6 +947,9 @@ function renderGroundCalendar(){
   const type=document.getElementById("calendarType")?.value||"All";
   const all=asCalendarItems();
   const visible=all.filter(e=>new Date(e.start)>=from && new Date(e.start)<=end && (type==="All"||e.type===type));
+  calendarListBtn.classList.toggle("active",calendarView==="list");
+  calendarMonthBtn.classList.toggle("active",calendarView==="month");
+  if(calendarView==="month"){groundCalendar.innerHTML=renderMonthCalendar(all,from);return}
   const groups={};
   visible.forEach(e=>{const key=new Date(e.start).toISOString().slice(0,10);(groups[key] ||= []).push(e)});
   groundCalendar.innerHTML=Object.entries(groups).map(([day,items])=>{
@@ -883,6 +1014,70 @@ function addMember(){
   closeModal("memberModal");save();toast("Member added");
 }
 
+
+let activeTeamSection="All";
+let calendarView="list";
+
+function renderDashboardMetrics(){
+  const now=new Date();
+  const upcoming=(data.fixtures||[]).filter(f=>new Date(f.date)>=now).length;
+  const todayStart=new Date();todayStart.setHours(0,0,0,0);
+  const tomorrow=new Date(todayStart);tomorrow.setDate(tomorrow.getDate()+1);
+  const todayCount=asCalendarItems().filter(e=>new Date(e.start)>=todayStart&&new Date(e.start)<tomorrow).length;
+  const responses=Object.values(data.availability||{}).reduce((n,fixture)=>n+Object.keys(fixture||{}).length,0);
+  metricFixtures.textContent=upcoming;
+  metricToday.textContent=todayCount;
+  metricMembers.textContent=(data.members||[]).length;
+  metricResponses.textContent=responses;
+  const profile=loadProfile();
+  heroGreeting.textContent=profile?.name?`Welcome back, ${profile.name}`:"Welcome to Bold Dragoon CC";
+  groundStatusPill.textContent=`Ground ${String(data.groundStatus).toLowerCase()}`;
+  groundStatusPill.className=`status-pill ${data.groundStatus==="Open"?"status-open":"status-closed"}`;
+}
+
+function renderTeams(){
+  const sections=["All",...(data.clubSections||[]).map(s=>s.name)];
+  teamSectionTabs.innerHTML=sections.map(s=>`<button class="${s===activeTeamSection?"active":""}" onclick="activeTeamSection='${s.replaceAll("'","\\'")}';renderTeams()">${s}</button>`).join("");
+  const relevant=(data.clubSections||[]).filter(s=>activeTeamSection==="All"||s.name===activeTeamSection);
+  const teams=relevant.flatMap(s=>(s.teams||[]).map(name=>({section:s.name,name})));
+  teamCards.innerHTML=teams.map(t=>{
+    const fixtures=(data.fixtures||[]).filter(f=>String(f.team).toLowerCase().includes(t.name.toLowerCase().replace(" xi",""))).slice(0,2);
+    const memberCount=(data.members||[]).filter(m=>m.team===t.name).length;
+    return `<div class="team-card"><h4>${t.name}</h4><div class="team-meta">${t.section} · ${memberCount} member${memberCount===1?"":"s"}</div>
+      ${fixtures.length?fixtures.map(f=>`<div class="meta">${new Date(f.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"})} · v ${f.opponent}</div>`).join(""):'<div class="meta">No linked fixtures yet</div>'}
+      <div class="button-row"><button class="secondary" onclick="showScreen('fixtures')">Fixtures</button><button class="secondary" onclick="showScreen('availability')">Availability</button></div></div>`;
+  }).join("");
+}
+
+function renderNews(){
+  newsFeed.innerHTML=(data.news||[]).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(n=>`<div class="news-card">
+    <div class="news-head"><strong>${n.title}</strong><span class="audience">${n.audience}</span></div>
+    <div class="meta">${new Date(n.createdAt).toLocaleString("en-GB")} · ${n.priority}</div>
+    <p>${n.message}</p></div>`).join("")||'<p class="empty">No club news yet.</p>';
+}
+
+function addNewsItem(){
+  const title=nTitle.value.trim(),message=nMessage.value.trim();
+  if(!title||!message){alert("Please add a title and message.");return}
+  data.news.push({id:crypto.randomUUID(),title,audience:nAudience.value,priority:nPriority.value,message,createdAt:new Date().toISOString()});
+  closeModal("newsModal");save();toast("Notice published");
+}
+
+function renderMonthCalendar(items,from){
+  const first=new Date(from.getFullYear(),from.getMonth(),1);
+  const last=new Date(from.getFullYear(),from.getMonth()+1,0);
+  const start=new Date(first);start.setDate(first.getDate()-((first.getDay()+6)%7));
+  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  let out=`<div class="month-grid">${days.map(d=>`<div class="month-head">${d}</div>`).join("")}`;
+  for(let i=0;i<42;i++){
+    const d=new Date(start);d.setDate(start.getDate()+i);
+    const key=d.toISOString().slice(0,10);
+    const dayItems=items.filter(e=>new Date(e.start).toISOString().slice(0,10)===key);
+    out+=`<div class="month-day ${d.getMonth()!==from.getMonth()?"muted":""}"><div class="month-date">${d.getDate()}</div>${dayItems.slice(0,3).map(e=>`<div class="month-event ${e.type}">${new Date(e.start).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})} ${e.title}</div>`).join("")}${dayItems.length>3?`<div class="meta">+${dayItems.length-3} more</div>`:""}</div>`;
+  }
+  return out+"</div>";
+}
+
 function renderClub(){
   document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
     <div class="item"><strong>${t.team}</strong><small>${fmtDate(t.date)}</small>
@@ -922,7 +1117,7 @@ function removeTraining(id){if(confirm("Delete this session?")){data.training=da
 function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
 function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
 function resetDemo(){if(confirm("Reset everything to the original demo data? This will update the shared club database.")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
-function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTodayGround();renderGroundCalendar();updatePlayCricketStatus();updateProfileUI()}
+function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();updatePlayCricketStatus();updateProfileUI()}
 document.getElementById("calendarFrom").value=new Date().toISOString().slice(0,10);
 renderAll();
 connectSharedDatabase();

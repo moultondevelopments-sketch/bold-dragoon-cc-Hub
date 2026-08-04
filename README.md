@@ -1,18 +1,15 @@
-# Bold Dragoon CC Hub — Professional Edition 4.1
+# Bold Dragoon CC Hub — Professional Edition 5.0
 
-Included:
+Major changes:
+- Professional seven-item navigation: Home, Calendar, Fixtures, Availability, Teams, News and More
+- New dashboard with club metrics, ground status and match-day weather placeholder
+- Whole-club team pages
+- News and announcement centre
+- Calendar list and month views
+- Ground events, bookings and clash warnings
 - Official club logo and app icons
-- Whole-club sections
-- Member directory and roles
-- Shared availability and team selection
-- Day-to-day ground calendar and clash warnings
-- Club ID 1245 preconfigured
+- Club ID 1245 stored
 - Play-Cricket sync ready for the API token
 
-Add the token only in Netlify:
-PLAY_CRICKET_API_TOKEN
-
-Optional:
-PLAY_CRICKET_SITE_ID=1245
-
-Never put the API token in GitHub.
+Existing Supabase and Netlify environment variables remain unchanged.
+Add PLAY_CRICKET_API_TOKEN in Netlify when supplied.
