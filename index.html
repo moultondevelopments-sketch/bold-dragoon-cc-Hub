@@ -251,6 +251,24 @@
       .bottom-nav button{min-width:72px}
     }
 
+
+    .ops-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .ops-card{border:1px solid #dfe5e1;border-radius:16px;padding:15px;background:#fff}
+    .ops-card h4{margin:0 0 7px}
+    .progress{height:9px;border-radius:999px;background:#edf1ee;overflow:hidden;margin-top:8px}
+    .progress span{display:block;height:100%;background:#1c6a40}
+    .contact-card{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;border:1px solid #e1e6e2;border-radius:14px;padding:13px;background:#fff}
+    .contact-card a{text-decoration:none}
+    .doc-card{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #e1e6e2;border-radius:14px;padding:13px;background:#fff}
+    .sponsor-card{display:flex;align-items:center;justify-content:center;min-height:110px;border:1px dashed #b9c6bd;border-radius:16px;background:#fafcfb;text-align:center;padding:12px}
+    .ground-control{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .ground-status-btns{display:flex;gap:8px}
+    .ground-status-btns button.active{background:#174f35;color:white}
+    .rota-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center;border:1px solid #e2e7e3;border-radius:13px;padding:11px;background:white}
+    .payment-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px;border:1px solid #e1e6e2;border-radius:13px;background:white}
+    .paid{color:#1c6a40;font-weight:800}.due{color:#9b5f00;font-weight:800}
+    .admin-only-note{font-size:.8rem;color:#6f7b72;margin-top:8px}
+
 </style>
 </head>
 <body>
@@ -511,12 +529,51 @@
       </div>
     </div>
   </section>
-<div class="version">Bold Dragoon CC Hub · Professional Edition 5.0 · Club Management</div>
+<div class="version">Bold Dragoon CC Hub · Professional Edition 6.0 · Whole Club Operations</div>
+
+
+  <section id="operations" class="screen">
+    <div class="section-title">
+      <div><h2>Club operations</h2><p>Ground status, volunteers, memberships, contacts and club administration.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="team-row">
+        <div><h3>Ground status</h3><p class="meta">Show members whether the ground is open, restricted or closed.</p></div>
+        <div class="ground-status-btns">
+          <button id="groundOpenBtn" onclick="setGroundStatus('Open')">Open</button>
+          <button id="groundRestrictedBtn" onclick="setGroundStatus('Restricted')">Restricted</button>
+          <button id="groundClosedBtn" onclick="setGroundStatus('Closed')">Closed</button>
+        </div>
+      </div>
+      <div id="groundStatusMessage" class="admin-note"></div>
+    </div>
+
+    <div class="ops-grid">
+      <div class="ops-card">
+        <h4>Volunteer rota</h4>
+        <div id="volunteerRota"></div>
+        <button class="secondary" onclick="openModal('rotaModal')">+ Add rota item</button>
+      </div>
+      <div class="ops-card">
+        <h4>Membership overview</h4>
+        <div id="membershipOverview"></div>
+        <button class="secondary" onclick="openModal('paymentModal')">+ Add payment record</button>
+      </div>
+      <div class="ops-card">
+        <h4>Club readiness</h4>
+        <div><span class="meta">Profiles completed</span><div class="progress"><span id="profileProgress" style="width:0%"></span></div></div>
+        <div style="margin-top:12px"><span class="meta">Availability collected</span><div class="progress"><span id="availabilityProgress" style="width:0%"></span></div></div>
+        <div style="margin-top:12px"><span class="meta">Play-Cricket connection</span><div class="progress"><span id="playCricketProgress" style="width:50%"></span></div></div>
+      </div>
+    </div>
+  </section>
 
   <section id="more" class="screen">
     <div class="section-title"><div><h2>More</h2><p>Club information, documents, contacts and administration.</p></div></div>
     <div class="more-grid">
       <button class="more-tile" onclick="showScreen('wholeclub')"><b>👥 Members</b><span class="meta">Directory, roles and club sections</span></button>
+<button class="more-tile" onclick="showScreen('operations')"><b>⚙️ Operations</b><span class="meta">Ground status, rota and membership</span></button>
       <button class="more-tile" onclick="showScreen('club')"><b>📣 Club centre</b><span class="meta">Notices, training and admin tools</span></button>
       <div class="more-tile"><b>📄 Documents</b><span class="meta">Policies, membership and safeguarding</span></div>
       <div class="more-tile"><b>🤝 Sponsors</b><span class="meta">Club partners and supporters</span></div>
@@ -541,6 +598,58 @@
 
 
 
+
+
+<div id="contactModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add club contact</h3><button class="close" onclick="closeModal('contactModal')">✕</button></div>
+    <label>Name</label><input id="cName">
+    <label>Role</label><input id="cRole" placeholder="Chair, captain, welfare officer">
+    <label>Email</label><input id="cEmail" type="email">
+    <label>Phone</label><input id="cPhone">
+    <div class="button-row"><button onclick="addContact()">Save contact</button></div>
+  </div>
+</div>
+
+<div id="documentModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add document</h3><button class="close" onclick="closeModal('documentModal')">✕</button></div>
+    <label>Document title</label><input id="dTitle">
+    <label>Category</label><select id="dCategory"><option>Policy</option><option>Safeguarding</option><option>Membership</option><option>Committee</option><option>Other</option></select>
+    <label>Link</label><input id="dUrl" placeholder="https://...">
+    <div class="button-row"><button onclick="addDocument()">Save document</button></div>
+  </div>
+</div>
+
+<div id="sponsorModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add sponsor</h3><button class="close" onclick="closeModal('sponsorModal')">✕</button></div>
+    <label>Sponsor name</label><input id="sName">
+    <label>Website</label><input id="sUrl" placeholder="https://...">
+    <label>Level</label><select id="sLevel"><option>Main sponsor</option><option>Team sponsor</option><option>Club supporter</option></select>
+    <div class="button-row"><button onclick="addSponsor()">Save sponsor</button></div>
+  </div>
+</div>
+
+<div id="rotaModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add rota item</h3><button class="close" onclick="closeModal('rotaModal')">✕</button></div>
+    <label>Task</label><input id="rTask" placeholder="Teas, bar, scoring, ground prep">
+    <label>Date</label><input id="rDate" type="date">
+    <label>Assigned to</label><input id="rPerson">
+    <div class="button-row"><button onclick="addRota()">Save rota item</button></div>
+  </div>
+</div>
+
+<div id="paymentModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Add membership record</h3><button class="close" onclick="closeModal('paymentModal')">✕</button></div>
+    <label>Member</label><input id="pMember">
+    <label>Type</label><select id="pType"><option>Senior</option><option>Junior</option><option>Family</option><option>Social</option></select>
+    <label>Status</label><select id="pStatus"><option>Paid</option><option>Due</option></select>
+    <div class="button-row"><button onclick="addPayment()">Save record</button></div>
+  </div>
+</div>
 
 <div id="newsModal" class="modal">
   <div class="modal-box">
@@ -699,6 +808,13 @@ const demoData = {
   ],
   members:[],
   groundStatus:"Open",
+  contacts:[
+    {id:crypto.randomUUID(),name:"Club Secretary",role:"Secretary",email:"bolddragooncc1987@gmail.com",phone:""}
+  ],
+  documents:[],
+  sponsors:[],
+  volunteerRota:[],
+  membershipRecords:[],
   news:[
     {id:crypto.randomUUID(),title:"Official fixtures imported",audience:"Whole club",priority:"Normal",message:"Fixtures shown in the app were checked against Bold Dragoon CC's official Play-Cricket team pages.",createdAt:new Date().toISOString()}
   ],
@@ -717,6 +833,11 @@ data.clubSections=data.clubSections||[];
 data.members=data.members||[];
 data.groundStatus=data.groundStatus||"Open";
 data.news=data.news||[];
+data.contacts=data.contacts||[];
+data.documents=data.documents||[];
+data.sponsors=data.sponsors||[];
+data.volunteerRota=data.volunteerRota||[];
+data.membershipRecords=data.membershipRecords||[];
 data.announcements=(data.announcements||[]).map(a=>({...a,audience:a.audience||"Whole club",priority:a.priority||"normal"}));
 data.players=(data.players||[]).map(p=>({...p,role:p.role||"Player"}));
 
@@ -1032,7 +1153,7 @@ function renderDashboardMetrics(){
   const profile=loadProfile();
   heroGreeting.textContent=profile?.name?`Welcome back, ${profile.name}`:"Welcome to Bold Dragoon CC";
   groundStatusPill.textContent=`Ground ${String(data.groundStatus).toLowerCase()}`;
-  groundStatusPill.className=`status-pill ${data.groundStatus==="Open"?"status-open":"status-closed"}`;
+  groundStatusPill.className=`status-pill ${data.groundStatus==="Open"?"status-open":data.groundStatus==="Restricted"?"due":"status-closed"}`;
 }
 
 function renderTeams(){
@@ -1078,6 +1199,67 @@ function renderMonthCalendar(items,from){
   return out+"</div>";
 }
 
+
+function setGroundStatus(status){
+  data.groundStatus=status;
+  save();
+  renderOperations();
+  renderDashboardMetrics();
+  toast(`Ground marked ${status.toLowerCase()}`);
+}
+
+function renderOperations(){
+  const status=data.groundStatus||"Open";
+  groundOpenBtn.classList.toggle("active",status==="Open");
+  groundRestrictedBtn.classList.toggle("active",status==="Restricted");
+  groundClosedBtn.classList.toggle("active",status==="Closed");
+  groundStatusMessage.textContent=status==="Open"?"The ground is open as normal.":status==="Restricted"?"The ground is open with restrictions. Check the calendar and notices before attending.":"The ground is currently closed. Members should not attend unless authorised.";
+
+  volunteerRota.innerHTML=(data.volunteerRota||[]).map(r=>`<div class="rota-row"><div><strong>${r.task}</strong><div class="meta">${new Date(r.date+"T12:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</div></div><div>${r.person||"Unassigned"}</div><button class="secondary" onclick="deleteRota('${r.id}')">Delete</button></div>`).join("")||'<p class="empty">No rota items added.</p>';
+
+  membershipOverview.innerHTML=(data.membershipRecords||[]).map(p=>`<div class="payment-row"><div><strong>${p.member}</strong><div class="meta">${p.type}</div></div><span class="${p.status==='Paid'?'paid':'due'}">${p.status}</span></div>`).join("")||'<p class="empty">No membership records added.</p>';
+
+  const memberCount=(data.members||[]).length;
+  profileProgress.style.width=(memberCount?Math.min(100,Math.round((memberCount/30)*100)):0)+"%";
+  const responses=Object.values(data.availability||{}).reduce((n,f)=>n+Object.keys(f||{}).length,0);
+  availabilityProgress.style.width=(memberCount?Math.min(100,Math.round((responses/memberCount)*100)):0)+"%";
+  playCricketProgress.style.width=data.playCricket?.lastSync?"100%":"50%";
+}
+
+function addRota(){
+  if(!rTask.value.trim()||!rDate.value){alert("Please add a task and date.");return}
+  data.volunteerRota.push({id:crypto.randomUUID(),task:rTask.value.trim(),date:rDate.value,person:rPerson.value.trim()});
+  closeModal("rotaModal");save();toast("Rota item added");
+}
+function deleteRota(id){data.volunteerRota=data.volunteerRota.filter(r=>r.id!==id);save()}
+function addPayment(){
+  if(!pMember.value.trim()){alert("Please add the member name.");return}
+  data.membershipRecords.push({id:crypto.randomUUID(),member:pMember.value.trim(),type:pType.value,status:pStatus.value});
+  closeModal("paymentModal");save();toast("Membership record added");
+}
+
+function renderMore(){
+  contactDirectory.innerHTML=(data.contacts||[]).map(c=>`<div class="contact-card"><div><strong>${c.name}</strong><div class="meta">${c.role}</div>${c.email?`<div><a href="mailto:${c.email}">${c.email}</a></div>`:""}${c.phone?`<div><a href="tel:${c.phone}">${c.phone}</a></div>`:""}</div><span class="badge-pill">${c.role}</span></div>`).join("")||'<p class="empty">No contacts added.</p>';
+  documentsList.innerHTML=(data.documents||[]).map(d=>`<div class="doc-card"><div><strong>${d.title}</strong><div class="meta">${d.category}</div></div><a class="secondary" href="${d.url}" target="_blank" rel="noopener">Open</a></div>`).join("")||'<p class="empty">No documents added.</p>';
+  sponsorGrid.innerHTML=(data.sponsors||[]).map(s=>`<a class="sponsor-card" href="${s.url||'#'}" target="_blank" rel="noopener"><div><strong>${s.name}</strong><div class="meta">${s.level}</div></div></a>`).join("")||'<div class="sponsor-card"><div><strong>Sponsor space available</strong><div class="meta">Add club sponsors here</div></div></div>';
+}
+
+function addContact(){
+  if(!cName.value.trim()||!cRole.value.trim()){alert("Please add a name and role.");return}
+  data.contacts.push({id:crypto.randomUUID(),name:cName.value.trim(),role:cRole.value.trim(),email:cEmail.value.trim(),phone:cPhone.value.trim()});
+  closeModal("contactModal");save();toast("Contact added");
+}
+function addDocument(){
+  if(!dTitle.value.trim()||!dUrl.value.trim()){alert("Please add a title and link.");return}
+  data.documents.push({id:crypto.randomUUID(),title:dTitle.value.trim(),category:dCategory.value,url:dUrl.value.trim()});
+  closeModal("documentModal");save();toast("Document added");
+}
+function addSponsor(){
+  if(!sName.value.trim()){alert("Please add the sponsor name.");return}
+  data.sponsors.push({id:crypto.randomUUID(),name:sName.value.trim(),url:sUrl.value.trim(),level:sLevel.value});
+  closeModal("sponsorModal");save();toast("Sponsor added");
+}
+
 function renderClub(){
   document.getElementById("trainingList").innerHTML=futureSorted(data.training).map(t=>`
     <div class="item"><strong>${t.team}</strong><small>${fmtDate(t.date)}</small>
@@ -1117,7 +1299,7 @@ function removeTraining(id){if(confirm("Delete this session?")){data.training=da
 function removeAnnouncement(id){if(confirm("Delete this announcement?")){data.announcements=data.announcements.filter(x=>x.id!==id);save()}}
 function removePlayer(id){if(confirm("Delete this player?")){data.players=data.players.filter(x=>x.id!==id);save()}}
 function resetDemo(){if(confirm("Reset everything to the original demo data? This will update the shared club database.")){localStorage.removeItem(KEY);data=structuredClone(demoData);save()}}
-function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();updatePlayCricketStatus();updateProfileUI()}
+function renderAll(){renderHome();renderFixtures();renderAvailability();renderTeamSelection();renderClub();renderWholeClub();renderTeams();renderNews();renderMore();renderOperations();renderTodayGround();renderGroundCalendar();renderDashboardMetrics();updatePlayCricketStatus();updateProfileUI()}
 document.getElementById("calendarFrom").value=new Date().toISOString().slice(0,10);
 renderAll();
 connectSharedDatabase();
